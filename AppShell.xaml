@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="InternshipMpbile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:InternshipMpbile.Pages"
+    Title="InternshipMpbile"
+    FlyoutBehavior="Flyout"
+    FlyoutBackgroundColor="{StaticResource FormCard}"
+    BackgroundColor="{StaticResource FormBackground}"
+    ForegroundColor="{StaticResource FormTitle}"
+    TitleColor="{StaticResource FormTitle}">
+
+    <!-- Görseldeki sol paneldeki amblem -->
+    <Shell.FlyoutHeader>
+        <Grid HeightRequest="190" BackgroundColor="{StaticResource FormCard}">
+            <Image Source="logo.png"
+                   Aspect="AspectFit"
+                   HeightRequest="120"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Başvuru Formu" Icon="ic_home.png" Route="basvuruformu">
+        <ShellContent ContentTemplate="{DataTemplate pages:BasvuruFormuPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Başvuru Listesi" Icon="ic_list.png" Route="basvurulistesi">
+        <ShellContent ContentTemplate="{DataTemplate pages:BasvuruListesiPage}" />
+    </FlyoutItem>
+
+</Shell>
