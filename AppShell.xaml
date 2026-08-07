@@ -30,4 +30,12 @@
         <ShellContent ContentTemplate="{DataTemplate pages:BasvuruListesiPage}" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Referans Ekleme" Icon="ic_ref_add.png" Route="referansekleme">
+        <ShellContent ContentTemplate="{DataTemplate pages:ReferansEklemePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Referans Listesi" Icon="ic_ref_list.png" Route="referanslistesi">
+        <ShellContent ContentTemplate="{DataTemplate pages:ReferansListesiPage}" />
+    </FlyoutItem>
+
 </Shell>

@@ -41,6 +41,11 @@
     <Color x:Key="FormButtonText">#7A7788</Color>
     <Color x:Key="FormAccent">#C0392B</Color>
 
+    <!-- Silme onayı pop-up'ı -->
+    <Color x:Key="FormOverlay">#66000000</Color>
+    <Color x:Key="FormConfirmYes">#2E9E5B</Color>
+    <Color x:Key="FormConfirmNo">#9C9AA5</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
