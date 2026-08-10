@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InternshipMpbile.Controls.TarihAlani">
+
+    <VerticalStackLayout Style="{StaticResource FieldGroup}">
+        <Label x:Name="BaslikLabel" Style="{StaticResource FieldLabel}" />
+        <Border Style="{StaticResource FieldBorder}">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label x:Name="YerTutucuLabel"
+                       Text="gg.aa.yyyy"
+                       Style="{StaticResource DatePlaceholder}" />
+                <DatePicker x:Name="DegerPicker"
+                            Style="{StaticResource FieldDatePicker}"
+                            DateSelected="OnTarihSecildi" />
+                <Path Grid.Column="1"
+                      Style="{StaticResource FieldIcon}"
+                      Data="M2,3 L14,3 L14,15 L2,15 Z M2,7 L14,7 M5,1 L5,5 M11,1 L11,5"
+                      HeightRequest="16"
+                      WidthRequest="16" />
+            </Grid>
+        </Border>
+    </VerticalStackLayout>
+
+</ContentView>

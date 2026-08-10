@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:models="clr-namespace:InternshipMpbile.Models"
+             x:Class="InternshipMpbile.Pages.KullanicilarPage"
+             Title=""
+             BackgroundColor="{StaticResource FormBackground}">
+
+    <Grid>
+
+        <RefreshView x:Name="KullaniciRefreshView" Refreshing="OnRefreshing">
+            <ScrollView>
+                <VerticalStackLayout Padding="14,16,14,28" Spacing="22">
+
+                    <!-- ==================== Kullanıcı ekleme ==================== -->
+                    <Border Padding="20,22,20,24"
+                            BackgroundColor="{StaticResource FormCard}"
+                            Stroke="{StaticResource FormCardBorder}"
+                            StrokeThickness="1">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="#25000000" Offset="0,3" Radius="12" Opacity="0.5" />
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="18">
+
+                            <Label Text="Kullanıcı Ekleme"
+                                   Style="{StaticResource PageTitle}"
+                                   Margin="0,0,0,4" />
+
+                            <controls:MetinAlani x:Name="IsimAlani" Baslik="İSİM" />
+
+                            <controls:MetinAlani x:Name="SoyisimAlani" Baslik="SOYİSİM" />
+
+                            <controls:MetinAlani x:Name="EpostaAlani"
+                                                 Baslik="E-POSTA"
+                                                 Klavye="Email" />
+
+                            <controls:SeciciAlan x:Name="RolAlani" Baslik="ROL" />
+
+                            <Button Text="Kaydet"
+                                    Clicked="OnKaydetClicked"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Margin="0,10,0,0" />
+
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- ==================== Kullanıcı listesi ==================== -->
+                    <Label Text="Kullanıcı Listesi"
+                           Style="{StaticResource PageTitle}" />
+
+                    <VerticalStackLayout x:Name="BosListeGorunumu"
+                                         Padding="30,20"
+                                         Spacing="8"
+                                         IsVisible="False"
+                                         HorizontalOptions="Center">
+                        <Label Text="Henüz kullanıcı yok"
+                               Style="{StaticResource EmptyStateTitle}" />
+                        <Label Text="Yukarıdaki formdan yeni bir kullanıcı ekleyebilirsiniz."
+                               Style="{StaticResource EmptyStateText}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout x:Name="KullaniciListesi" Spacing="12">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Kullanici">
+                                <Border Padding="16,14"
+                                        BackgroundColor="{StaticResource FormCard}"
+                                        Stroke="{StaticResource FormCardBorder}"
+                                        StrokeThickness="1">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10" />
+                                    </Border.StrokeShape>
+                                    <Border.Shadow>
+                                        <Shadow Brush="#25000000" Offset="0,2" Radius="8" Opacity="0.4" />
+                                    </Border.Shadow>
+
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+
+                                        <Grid ColumnDefinitions="*,*"
+                                              RowDefinitions="Auto,Auto,Auto"
+                                              ColumnSpacing="12"
+                                              RowSpacing="9"
+                                              VerticalOptions="Center">
+
+                                            <VerticalStackLayout Grid.Row="0" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                                <Label Text="İSİM" Style="{StaticResource ListRowLabel}" />
+                                                <Label Text="{Binding Isim}" Style="{StaticResource ListRowValue}" />
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="0" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                                <Label Text="SOYİSİM" Style="{StaticResource ListRowLabel}" />
+                                                <Label Text="{Binding Soyisim}" Style="{StaticResource ListRowValue}" />
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Style="{StaticResource ListRowGroup}">
+                                                <Label Text="E-POSTA" Style="{StaticResource ListRowLabel}" />
+                                                <Label Text="{Binding Eposta}" Style="{StaticResource ListRowValue}" />
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="2" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                                <Label Text="ŞİFRE" Style="{StaticResource ListRowLabel}" />
+                                                <Label Text="{Binding SifreMaskesi}" Style="{StaticResource ListRowValue}" />
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Row="2" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                                <Label Text="ROL" Style="{StaticResource ListRowLabel}" />
+                                                <Label Text="{Binding Rol}" Style="{StaticResource ListRowValue}" />
+                                            </VerticalStackLayout>
+
+                                        </Grid>
+
+                                        <!-- Çöp kutusu: silme onayı pop-up'ını açar -->
+                                        <Border Grid.Column="1"
+                                                Padding="9"
+                                                BackgroundColor="{StaticResource FormButtonBackground}"
+                                                Stroke="{StaticResource FormFieldBorder}"
+                                                StrokeThickness="1"
+                                                VerticalOptions="Center">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="8" />
+                                            </Border.StrokeShape>
+                                            <Border.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="OnSilTapped" />
+                                            </Border.GestureRecognizers>
+                                            <Path Data="M3,5 L17,5 M8,5 L8,3 L12,3 L12,5 M5,5 L5.9,17 L14.1,17 L15,5 M8.4,8 L8.8,14 M11.6,8 L11.2,14"
+                                                  Stroke="{StaticResource FormAccent}"
+                                                  StrokeThickness="1.6"
+                                                  Fill="Transparent"
+                                                  Aspect="Uniform"
+                                                  HeightRequest="20"
+                                                  WidthRequest="20"
+                                                  InputTransparent="True" />
+                                        </Border>
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <ActivityIndicator x:Name="YukleniyorIndicator"
+                           Style="{StaticResource PageBusyIndicator}" />
+
+        <!-- ==================== Kayıt onayı pop-up'ı ==================== -->
+        <Grid x:Name="KayitOnayiOverlay"
+              IsVisible="False"
+              BackgroundColor="{StaticResource FormOverlay}">
+
+            <Border Margin="30"
+                    Padding="22,24"
+                    MaximumWidthRequest="360"
+                    BackgroundColor="{StaticResource FormCard}"
+                    Stroke="{StaticResource FormCardBorder}"
+                    StrokeThickness="1"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#40000000" Offset="0,4" Radius="16" Opacity="0.6" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="18">
+
+                    <Label Text="Bu Kullanıcıyı Kaydetmek İstediğinize Emin Misiniz?"
+                           Style="{StaticResource DialogTitle}" />
+
+                    <!-- Forma girilmiş değerlerin özeti -->
+                    <VerticalStackLayout Spacing="9">
+
+                        <VerticalStackLayout Style="{StaticResource ListRowGroup}">
+                            <Label Text="İSİM" Style="{StaticResource ListRowLabel}" />
+                            <Label x:Name="OnayIsimLabel" Style="{StaticResource ListRowValue}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Style="{StaticResource ListRowGroup}">
+                            <Label Text="SOYİSİM" Style="{StaticResource ListRowLabel}" />
+                            <Label x:Name="OnaySoyisimLabel" Style="{StaticResource ListRowValue}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Style="{StaticResource ListRowGroup}">
+                            <Label Text="E-POSTA" Style="{StaticResource ListRowLabel}" />
+                            <Label x:Name="OnayEpostaLabel" Style="{StaticResource ListRowValue}" />
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Style="{StaticResource ListRowGroup}">
+                            <Label Text="ROL" Style="{StaticResource ListRowLabel}" />
+                            <Label x:Name="OnayRolLabel" Style="{StaticResource ListRowValue}" />
+                        </VerticalStackLayout>
+
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Button Text="Evet"
+                                Style="{StaticResource ConfirmButton}"
+                                BackgroundColor="{StaticResource FormConfirmYes}"
+                                Clicked="OnKayitEvetClicked" />
+                        <Button Grid.Column="1"
+                                Text="Hayır"
+                                Style="{StaticResource ConfirmButton}"
+                                BackgroundColor="{StaticResource FormConfirmNo}"
+                                Clicked="OnKayitHayirClicked" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ==================== Silme onayı pop-up'ı ==================== -->
+        <Grid x:Name="SilmeOnayiOverlay"
+              IsVisible="False"
+              BackgroundColor="{StaticResource FormOverlay}">
+
+            <Border Margin="30"
+                    Padding="22,24"
+                    MaximumWidthRequest="340"
+                    BackgroundColor="{StaticResource FormCard}"
+                    Stroke="{StaticResource FormCardBorder}"
+                    StrokeThickness="1"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="12" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#40000000" Offset="0,4" Radius="16" Opacity="0.6" />
+                </Border.Shadow>
+
+                <VerticalStackLayout Spacing="20">
+
+                    <Label Text="Kullanıcıyı Silmek İstediğinizden Emin Misiniz?"
+                           Style="{StaticResource DialogTitle}" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Button Text="Evet"
+                                Style="{StaticResource ConfirmButton}"
+                                BackgroundColor="{StaticResource FormConfirmYes}"
+                                Clicked="OnSilmeEvetClicked" />
+                        <Button Grid.Column="1"
+                                Text="Hayır"
+                                Style="{StaticResource ConfirmButton}"
+                                BackgroundColor="{StaticResource FormConfirmNo}"
+                                Clicked="OnSilmeHayirClicked" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Sağ üstte 1,5 saniye görünen bildirim -->
+        <Border x:Name="BildirimToast" Style="{StaticResource ToastCard}">
+            <Label x:Name="BildirimLabel" Style="{StaticResource ToastText}" />
+        </Border>
+
+    </Grid>
+
+</ContentPage>

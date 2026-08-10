@@ -28,11 +28,7 @@ namespace InternshipMpbile.Pages
             // Aşağı çekerek yenilemede RefreshView kendi göstergesini gösterir,
             // ilk yüklemede ise ortadaki gösterge devreye girer.
             var ilkYukleme = !BasvuruRefreshView.IsRefreshing;
-            if (ilkYukleme)
-            {
-                YukleniyorIndicator.IsVisible = true;
-                YukleniyorIndicator.IsRunning = true;
-            }
+            GostergeyiAyarla(ilkYukleme);
 
             try
             {
@@ -44,9 +40,14 @@ namespace InternshipMpbile.Pages
             }
             finally
             {
-                YukleniyorIndicator.IsVisible = false;
-                YukleniyorIndicator.IsRunning = false;
+                GostergeyiAyarla(false);
             }
+        }
+
+        private void GostergeyiAyarla(bool gorunur)
+        {
+            YukleniyorIndicator.IsVisible = gorunur;
+            YukleniyorIndicator.IsRunning = gorunur;
         }
     }
 }

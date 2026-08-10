@@ -11,14 +11,34 @@
     ForegroundColor="{StaticResource FormTitle}"
     TitleColor="{StaticResource FormTitle}">
 
-    <!-- Görseldeki sol paneldeki amblem -->
+    <!-- Görseldeki sol paneldeki amblem ve giriş yapan kullanıcının adı -->
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="190" BackgroundColor="{StaticResource FormCard}">
-            <Image Source="logo.png"
+        <Grid HeightRequest="230"
+              RowDefinitions="*,Auto,Auto"
+              Padding="18,0,18,0"
+              BackgroundColor="{StaticResource FormCard}">
+
+            <Image Source="gsb_logo.png"
                    Aspect="AspectFit"
                    HeightRequest="120"
                    VerticalOptions="Center"
                    HorizontalOptions="Center" />
+
+            <VerticalStackLayout Grid.Row="1" Spacing="2" Margin="0,0,0,14">
+                <Label Text="GİRİŞ YAPAN KULLANICI"
+                       Style="{StaticResource ListRowLabel}"
+                       HorizontalTextAlignment="Center" />
+                <Label x:Name="KullaniciAdiLabel"
+                       TextColor="{StaticResource FormTitle}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="15"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+
+            <BoxView Grid.Row="2"
+                     HeightRequest="1"
+                     Color="{StaticResource FormCardBorder}"
+                     Margin="-18,0" />
         </Grid>
     </Shell.FlyoutHeader>
 
@@ -37,5 +57,41 @@
     <FlyoutItem Title="Referans Listesi" Icon="ic_ref_list.png" Route="referanslistesi">
         <ShellContent ContentTemplate="{DataTemplate pages:ReferansListesiPage}" />
     </FlyoutItem>
+
+    <FlyoutItem Title="Kullanıcılar" Icon="ic_user.png" Route="kullanicilar">
+        <ShellContent ContentTemplate="{DataTemplate pages:KullanicilarPage}" />
+    </FlyoutItem>
+
+    <!-- Menünün en altındaki kırmızı çıkış bağlantısı -->
+    <Shell.FlyoutFooter>
+        <Grid RowDefinitions="Auto,Auto" BackgroundColor="{StaticResource FormCard}">
+
+            <BoxView HeightRequest="1" Color="{StaticResource FormCardBorder}" />
+
+            <Grid Grid.Row="1" HeightRequest="60" Padding="20,0">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCikisYapTapped" />
+                </Grid.GestureRecognizers>
+
+                <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                    <Path Data="M9,4 L4,4 L4,20 L9,20 M13,12 L21,12 M18,9 L21,12 L18,15"
+                          Stroke="{StaticResource FormLogout}"
+                          StrokeThickness="1.8"
+                          Fill="Transparent"
+                          Aspect="Uniform"
+                          HeightRequest="20"
+                          WidthRequest="20"
+                          VerticalOptions="Center"
+                          InputTransparent="True" />
+                    <Label Text="Çıkış Yap"
+                           TextColor="{StaticResource FormLogout}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           InputTransparent="True" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+    </Shell.FlyoutFooter>
 
 </Shell>

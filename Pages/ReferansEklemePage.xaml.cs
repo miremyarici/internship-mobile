@@ -5,59 +5,61 @@ namespace InternshipMpbile.Pages
 {
     public partial class ReferansEklemePage : ContentPage
     {
+        private const string EkranAdi = "Referans Ekleme";
+        private const string TipSecilmediMesaji = "Önce referans tipi seçiniz";
+        private const string AltTipYokMesaji = "Bu tip için kayıtlı değer yok";
+
         public ReferansEklemePage()
         {
             InitializeComponent();
-            ReferansTipiPicker.ItemsSource = ReferansService.Tipler;
+            ReferansTipiAlani.Secenekler = ReferansService.Tipler;
         }
 
         // Tip seçildiğinde alt tip seçenekleri, başvuru formu tablosunda o sütuna
         // girilmiş olan değerlerden okunur.
-        private async void OnReferansTipiChanged(object? sender, EventArgs e)
+        private async void OnReferansTipiDegisti(object? sender, EventArgs e)
         {
-            ReferansAltTipiPicker.ItemsSource = null;
-            ReferansAltTipiPicker.SelectedItem = null;
+            AltTipAlaniniSifirla();
 
-            if (ReferansTipiPicker.SelectedItem is not string tip)
-            {
-                ReferansAltTipiPicker.IsEnabled = false;
-                ReferansAltTipiPicker.Title = "Önce referans tipi seçiniz";
+            if (ReferansTipiAlani.SecilenDeger is not string tip)
                 return;
-            }
 
-            ReferansAltTipiPicker.IsEnabled = false;
-            ReferansAltTipiPicker.Title = string.Empty;
-            AltTipYukleniyorIndicator.IsVisible = true;
-            AltTipYukleniyorIndicator.IsRunning = true;
+            ReferansAltTipiAlani.YerTutucu = string.Empty;
+            ReferansAltTipiAlani.Yukleniyor = true;
 
             try
             {
                 var altTipler = await ReferansService.AltTipleriGetirAsync(tip);
 
-                ReferansAltTipiPicker.ItemsSource = altTipler;
-                ReferansAltTipiPicker.IsEnabled = altTipler.Count > 0;
-                ReferansAltTipiPicker.Title = altTipler.Count > 0
-                    ? "Seçiniz"
-                    : "Bu tip için kayıtlı değer yok";
+                ReferansAltTipiAlani.Secenekler = altTipler;
+                ReferansAltTipiAlani.Secilebilir = altTipler.Count > 0;
+                ReferansAltTipiAlani.YerTutucu = altTipler.Count > 0 ? "Seçiniz" : AltTipYokMesaji;
             }
             catch (Exception ex)
             {
-                ReferansAltTipiPicker.Title = "Seçiniz";
+                ReferansAltTipiAlani.YerTutucu = "Seçiniz";
                 await DisplayAlert("Hata", $"Alt tipler yüklenirken bir hata oluştu: {ex.Message}", "Tamam");
             }
             finally
             {
-                AltTipYukleniyorIndicator.IsVisible = false;
-                AltTipYukleniyorIndicator.IsRunning = false;
+                ReferansAltTipiAlani.Yukleniyor = false;
             }
+        }
+
+        private void AltTipAlaniniSifirla()
+        {
+            ReferansAltTipiAlani.Secenekler = null;
+            ReferansAltTipiAlani.Temizle();
+            ReferansAltTipiAlani.Secilebilir = false;
+            ReferansAltTipiAlani.YerTutucu = TipSecilmediMesaji;
         }
 
         private async void OnKaydetClicked(object? sender, EventArgs e)
         {
-            if (ReferansTipiPicker.SelectedItem is not string tip ||
-                ReferansAltTipiPicker.SelectedItem is not string altTip)
+            if (ReferansTipiAlani.SecilenDeger is not string tip ||
+                ReferansAltTipiAlani.SecilenDeger is not string altTip)
             {
-                await DisplayAlert("Referans Ekleme", "Lütfen referans tipi ve alt tipini seçin.", "Tamam");
+                await DisplayAlert(EkranAdi, "Lütfen referans tipi ve alt tipini seçin.", "Tamam");
                 return;
             }
 
@@ -65,24 +67,20 @@ namespace InternshipMpbile.Pages
             {
                 if (await ReferansService.VarMiAsync(tip, altTip))
                 {
-                    await DisplayAlert("Referans Ekleme", "Bu referans zaten kayıtlı.", "Tamam");
+                    await DisplayAlert(EkranAdi, "Bu referans zaten kayıtlı.", "Tamam");
                     return;
                 }
 
                 await ReferansService.KaydetAsync(new Referans { Type = tip, Subtype = altTip });
-                await DisplayAlert("Referans Ekleme", "Referans başarıyla kaydedildi.", "Tamam");
-                FormuTemizle();
+                await DisplayAlert(EkranAdi, "Referans başarıyla kaydedildi.", "Tamam");
+
+                // Tip sıfırlanınca OnReferansTipiDegisti alt tip alanını da temizler.
+                ReferansTipiAlani.Temizle();
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Hata", $"Kayıt sırasında bir hata oluştu: {ex.Message}", "Tamam");
             }
-        }
-
-        private void FormuTemizle()
-        {
-            // Tip sıfırlanınca OnReferansTipiChanged alt tip alanını da temizler.
-            ReferansTipiPicker.SelectedItem = null;
         }
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InternshipMpbile.Controls.SeciciAlan">
+
+    <VerticalStackLayout Style="{StaticResource FieldGroup}">
+        <Label x:Name="BaslikLabel" Style="{StaticResource FieldLabel}" />
+        <Border Style="{StaticResource FieldBorder}">
+            <Grid ColumnDefinitions="*,Auto">
+                <Picker x:Name="DegerPicker"
+                        Title="Seçiniz"
+                        Style="{StaticResource FieldPicker}"
+                        SelectedIndexChanged="OnPickerSecimiDegisti" />
+                <ActivityIndicator x:Name="YukleniyorIndicator"
+                                   Style="{StaticResource FieldBusyIndicator}"
+                                   IsVisible="False"
+                                   IsRunning="False" />
+                <Path Grid.Column="1"
+                      Style="{StaticResource FieldIcon}"
+                      Data="M0,0 L5,5 L10,0"
+                      HeightRequest="6"
+                      WidthRequest="12" />
+            </Grid>
+        </Border>
+    </VerticalStackLayout>
+
+</ContentView>

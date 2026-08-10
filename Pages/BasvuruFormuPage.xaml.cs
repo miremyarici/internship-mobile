@@ -5,112 +5,46 @@ namespace InternshipMpbile.Pages
 {
     public partial class BasvuruFormuPage : ContentPage
     {
+        private const string EkranAdi = "Başvuru Formu";
+        private const string ParolaEkraniAdi = "Parolayı Değiştir";
+        private const int EnAzParolaUzunlugu = 6;
+
         public BasvuruFormuPage()
         {
             InitializeComponent();
-            DoldurSecenekler();
+            SecenekleriYukle();
         }
 
-        // Geçici seçenekler - lookup tabloları oluşturulduğunda buradan kaldırılacak.
-        private void DoldurSecenekler()
+        // Geçici parolayla giriş yapan kullanıcıyı, formu kullanmadan önce
+        // parola değiştirme pop-up'ı karşılar.
+        protected override void OnAppearing()
         {
-            BasvuranBirimPicker.ItemsSource = new List<string>
-            {
-                "Bilgi İşlem",
-                "İnsan Kaynakları",
-                "Yatırım İşleri",
-                "test"
-            };
-
-            BasvuruYapilanProjePicker.ItemsSource = new List<string>
-            {
-                "Erasmus",
-                "Merkezi",
-                "Avrupa",
-                "Diğer"
-            };
-
-            BasvuruYapilanTurPicker.ItemsSource = new List<string>
-            {
-                "Gençlik",
-                "Yetişkin",
-                "Spor",
-                "Mesleki",
-                "Dijital",
-                "Diğer"
-            };
-
-            KatilimciTuruPicker.ItemsSource = new List<string>
-            {
-                "Koordinatör",
-                "Ortak",
-                "R2",
-                "R3"
-            };
-
-            BasvuruDonemiPicker.ItemsSource = new List<string>
-            {
-                "R1"
-            };
-
-            BasvuruDurumuPicker.ItemsSource = new List<string>
-            {
-                "Kabul",
-                "Red"
-            };
+            base.OnAppearing();
+            ParolaDegistirOverlay.IsVisible = Oturum.AktifKullanici?.GeciciSifre == true;
         }
 
-        // Tarih seçilene kadar "gg.aa.yyyy" yer tutucusu görünür; seçildiğinde
-        // yer tutucu gizlenip DatePicker metni görünür hale gelir.
-        private void OnBasvuruTarihiSelected(object? sender, DateChangedEventArgs e)
+        private void SecenekleriYukle()
         {
-            BasvuruTarihiPlaceholder.IsVisible = false;
-            BasvuruTarihiPicker.TextColor = GetFieldTextColor();
+            BasvuranBirimAlani.Secenekler = FormSecenekleri.BasvuranBirimler;
+            BasvuruYapilanProjeAlani.Secenekler = FormSecenekleri.BasvuruYapilanProjeler;
+            BasvuruYapilanTurAlani.Secenekler = FormSecenekleri.BasvuruYapilanTurler;
+            KatilimciTuruAlani.Secenekler = FormSecenekleri.KatilimciTurleri;
+            BasvuruDonemiAlani.Secenekler = FormSecenekleri.BasvuruDonemleri;
+            BasvuruDurumuAlani.Secenekler = FormSecenekleri.BasvuruDurumlari;
         }
-
-        private void OnDurumTarihiSelected(object? sender, DateChangedEventArgs e)
-        {
-            DurumTarihiPlaceholder.IsVisible = false;
-            DurumTarihiPicker.TextColor = GetFieldTextColor();
-        }
-
-        private static Color GetFieldTextColor() =>
-            Application.Current?.Resources.TryGetValue("FormFieldText", out var color) == true && color is Color c
-                ? c
-                : Colors.Black;
 
         private async void OnKaydetClicked(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(ProjeAdiEntry.Text) ||
-                BasvuranBirimPicker.SelectedItem is null ||
-                BasvuruYapilanProjePicker.SelectedItem is null ||
-                BasvuruYapilanTurPicker.SelectedItem is null ||
-                KatilimciTuruPicker.SelectedItem is null ||
-                BasvuruDonemiPicker.SelectedItem is null ||
-                BasvuruDurumuPicker.SelectedItem is null)
+            if (!ZorunluAlanlarDolu())
             {
-                await DisplayAlert("Başvuru Formu", "Lütfen tüm zorunlu alanları doldurun.", "Tamam");
+                await DisplayAlert(EkranAdi, "Lütfen tüm zorunlu alanları doldurun.", "Tamam");
                 return;
             }
 
-            var basvuru = new Basvuru
-            {
-                ProjeAdi = ProjeAdiEntry.Text,
-                BasvuranBirim = (string)BasvuranBirimPicker.SelectedItem,
-                BasvuruYapilanProje = (string)BasvuruYapilanProjePicker.SelectedItem,
-                BasvuruYapilanTur = (string)BasvuruYapilanTurPicker.SelectedItem,
-                KatilimciTuru = (string)KatilimciTuruPicker.SelectedItem,
-                BasvuruDonemi = (string)BasvuruDonemiPicker.SelectedItem,
-                BasvuruTarihi = BasvuruTarihiPicker.Date,
-                BasvuruDurumu = (string)BasvuruDurumuPicker.SelectedItem,
-                DurumTarihi = DurumTarihiPicker.Date,
-                HibeTutari = decimal.TryParse(HibeTutariEntry.Text, out var hibeTutari) ? hibeTutari : null
-            };
-
             try
             {
-                await BasvuruService.KaydetAsync(basvuru);
-                await DisplayAlert("Başvuru Formu", "Başvuru başarıyla kaydedildi.", "Tamam");
+                await BasvuruService.KaydetAsync(FormdanBasvuruOlustur());
+                await DisplayAlert(EkranAdi, "Başvuru başarıyla kaydedildi.", "Tamam");
                 FormuTemizle();
             }
             catch (Exception ex)
@@ -119,25 +53,128 @@ namespace InternshipMpbile.Pages
             }
         }
 
+        // Hibe tutarı dışındaki tüm alanlar zorunludur.
+        private bool ZorunluAlanlarDolu() =>
+            !ProjeAdiAlani.Bos &&
+            !BasvuranBirimAlani.Bos &&
+            !BasvuruYapilanProjeAlani.Bos &&
+            !BasvuruYapilanTurAlani.Bos &&
+            !KatilimciTuruAlani.Bos &&
+            !BasvuruDonemiAlani.Bos &&
+            !BasvuruDurumuAlani.Bos;
+
+        private Basvuru FormdanBasvuruOlustur() => new()
+        {
+            ProjeAdi = ProjeAdiAlani.Deger!,
+            BasvuranBirim = BasvuranBirimAlani.SecilenDeger!,
+            BasvuruYapilanProje = BasvuruYapilanProjeAlani.SecilenDeger!,
+            BasvuruYapilanTur = BasvuruYapilanTurAlani.SecilenDeger!,
+            KatilimciTuru = KatilimciTuruAlani.SecilenDeger!,
+            BasvuruDonemi = BasvuruDonemiAlani.SecilenDeger!,
+            BasvuruTarihi = BasvuruTarihiAlani.Tarih,
+            BasvuruDurumu = BasvuruDurumuAlani.SecilenDeger!,
+            DurumTarihi = DurumTarihiAlani.Tarih,
+            HibeTutari = decimal.TryParse(HibeTutariAlani.Deger, out var hibeTutari) ? hibeTutari : null
+        };
+
         // Kayıt sonrası alanları boşaltarak formu yeni başvuruya hazırlar.
         private void FormuTemizle()
         {
-            ProjeAdiEntry.Text = string.Empty;
-            HibeTutariEntry.Text = string.Empty;
+            ProjeAdiAlani.Temizle();
+            HibeTutariAlani.Temizle();
 
-            BasvuranBirimPicker.SelectedItem = null;
-            BasvuruYapilanProjePicker.SelectedItem = null;
-            BasvuruYapilanTurPicker.SelectedItem = null;
-            KatilimciTuruPicker.SelectedItem = null;
-            BasvuruDonemiPicker.SelectedItem = null;
-            BasvuruDurumuPicker.SelectedItem = null;
+            BasvuranBirimAlani.Temizle();
+            BasvuruYapilanProjeAlani.Temizle();
+            BasvuruYapilanTurAlani.Temizle();
+            KatilimciTuruAlani.Temizle();
+            BasvuruDonemiAlani.Temizle();
+            BasvuruDurumuAlani.Temizle();
 
-            BasvuruTarihiPicker.Date = DateTime.Today;
-            DurumTarihiPicker.Date = DateTime.Today;
-            BasvuruTarihiPicker.TextColor = Colors.Transparent;
-            DurumTarihiPicker.TextColor = Colors.Transparent;
-            BasvuruTarihiPlaceholder.IsVisible = true;
-            DurumTarihiPlaceholder.IsVisible = true;
+            BasvuruTarihiAlani.Temizle();
+            DurumTarihiAlani.Temizle();
+        }
+
+        // ==================== Parola değiştirme ====================
+
+        private async void OnParolaKaydetClicked(object? sender, EventArgs e)
+        {
+            if (Oturum.AktifKullanici is not { } kullanici)
+                return;
+
+            var eskiParola = EskiParolaAlani.Deger ?? string.Empty;
+            var yeniParola = YeniParolaAlani.Deger ?? string.Empty;
+            var yeniParolaTekrar = YeniParolaTekrarAlani.Deger ?? string.Empty;
+
+            if (eskiParola.Length == 0 || yeniParola.Length == 0 || yeniParolaTekrar.Length == 0)
+            {
+                await DisplayAlert(ParolaEkraniAdi, "Lütfen tüm alanları doldurun.", "Tamam");
+                return;
+            }
+
+            if (yeniParola != yeniParolaTekrar)
+            {
+                await DisplayAlert(ParolaEkraniAdi, "Yeni parolalar birbiriyle aynı değil.", "Tamam");
+                return;
+            }
+
+            if (yeniParola.Length < EnAzParolaUzunlugu)
+            {
+                await DisplayAlert(ParolaEkraniAdi,
+                    $"Yeni parola en az {EnAzParolaUzunlugu} karakter olmalıdır.", "Tamam");
+                return;
+            }
+
+            if (yeniParola == eskiParola)
+            {
+                await DisplayAlert(ParolaEkraniAdi, "Yeni parola geçici parolanızdan farklı olmalıdır.", "Tamam");
+                return;
+            }
+
+            ParolaKaydetButonu.IsEnabled = false;
+
+            try
+            {
+                if (!await KullaniciService.SifreDegistirAsync(kullanici.Id, eskiParola, yeniParola))
+                {
+                    await DisplayAlert(ParolaEkraniAdi, "Eski parolanız hatalı.", "Tamam");
+                    return;
+                }
+
+                kullanici.GeciciSifre = false;
+                ParolaDegistirOverlay.IsVisible = false;
+                ParolaAlanlariniTemizle();
+
+                await BildirimGosterAsync("Parolanız başarıyla değiştirildi.");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", $"Parola değiştirilirken bir hata oluştu: {ex.Message}", "Tamam");
+            }
+            finally
+            {
+                ParolaKaydetButonu.IsEnabled = true;
+            }
+        }
+
+        private void ParolaAlanlariniTemizle()
+        {
+            EskiParolaAlani.Temizle();
+            YeniParolaAlani.Temizle();
+            YeniParolaTekrarAlani.Temizle();
+        }
+
+        /// <summary>Sağ üstte beliren, 1,5 saniye ekranda kalan yeşil bildirim.</summary>
+        private async Task BildirimGosterAsync(string mesaj)
+        {
+            BildirimLabel.Text = mesaj;
+            BildirimToast.Opacity = 0;
+            BildirimToast.IsVisible = true;
+
+            await BildirimToast.FadeTo(1, 150);
+            await Task.Delay(1500);
+            await BildirimToast.FadeTo(0, 200);
+
+            BildirimToast.IsVisible = false;
         }
     }
 }

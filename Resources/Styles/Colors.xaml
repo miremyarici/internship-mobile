@@ -46,6 +46,10 @@
     <Color x:Key="FormConfirmYes">#2E9E5B</Color>
     <Color x:Key="FormConfirmNo">#9C9AA5</Color>
 
+    <!-- Sağ üstte beliren bildirim ve menüdeki çıkış bağlantısı -->
+    <Color x:Key="FormToast">#2E9E5B</Color>
+    <Color x:Key="FormLogout">#C0392B</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>

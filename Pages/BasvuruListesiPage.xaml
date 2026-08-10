@@ -6,35 +6,11 @@
              Title=""
              BackgroundColor="{StaticResource FormBackground}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-
-            <!-- Kart içindeki satır başlığı -->
-            <Style x:Key="SatirLabel" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource FormFieldLabel}" />
-                <Setter Property="FontFamily" Value="OpenSansSemibold" />
-                <Setter Property="FontSize" Value="10" />
-                <Setter Property="CharacterSpacing" Value="0.8" />
-            </Style>
-
-            <!-- Kart içindeki satır değeri -->
-            <Style x:Key="SatirDeger" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource FormFieldText}" />
-                <Setter Property="FontFamily" Value="OpenSansRegular" />
-                <Setter Property="FontSize" Value="13" />
-            </Style>
-
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <Grid RowDefinitions="Auto,*">
 
         <Label Grid.Row="0"
                Text="Başvuru Listesi"
-               TextColor="{StaticResource FormTitle}"
-               FontFamily="OpenSansSemibold"
-               FontSize="19"
-               HorizontalOptions="Center"
+               Style="{StaticResource PageTitle}"
                Margin="0,18,0,10" />
 
         <RefreshView Grid.Row="1"
@@ -50,15 +26,9 @@
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="30,60" Spacing="8" HorizontalOptions="Center">
                         <Label Text="Henüz başvuru yok"
-                               TextColor="{StaticResource FormTitle}"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="15"
-                               HorizontalOptions="Center" />
+                               Style="{StaticResource EmptyStateTitle}" />
                         <Label Text="Başvuru Formu ekranından yeni bir kayıt oluşturabilirsiniz."
-                               TextColor="{StaticResource FormPlaceholder}"
-                               FontFamily="OpenSansRegular"
-                               FontSize="13"
-                               HorizontalTextAlignment="Center" />
+                               Style="{StaticResource EmptyStateText}" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
 
@@ -107,44 +77,44 @@
                                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto"
                                       ColumnSpacing="12" RowSpacing="9">
 
-                                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
-                                        <Label Text="BAŞVURAN BİRİM" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding BasvuranBirim}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="BAŞVURAN BİRİM" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuranBirim}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
-                                        <Label Text="BAŞVURU DÖNEMİ" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding BasvuruDonemi}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="0" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="BAŞVURU DÖNEMİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruDonemi}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="2">
-                                        <Label Text="YAPILAN PROJE" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding BasvuruYapilanProje}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="1" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="YAPILAN PROJE" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruYapilanProje}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="2">
-                                        <Label Text="YAPILAN TÜR" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding BasvuruYapilanTur}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="1" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="YAPILAN TÜR" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruYapilanTur}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="2" Grid.Column="0" Spacing="2">
-                                        <Label Text="KATILIMCI TÜRÜ" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding KatilimciTuru}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="2" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="KATILIMCI TÜRÜ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding KatilimciTuru}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="2" Grid.Column="1" Spacing="2">
-                                        <Label Text="HİBE TUTARI" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding HibeTutariText}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="2" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="HİBE TUTARI" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding HibeTutariText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="3" Grid.Column="0" Spacing="2">
-                                        <Label Text="BAŞVURU TARİHİ" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding BasvuruTarihiText}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="3" Grid.Column="0" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="BAŞVURU TARİHİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruTarihiText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
-                                    <VerticalStackLayout Grid.Row="3" Grid.Column="1" Spacing="2">
-                                        <Label Text="DURUM TARİHİ" Style="{StaticResource SatirLabel}" />
-                                        <Label Text="{Binding DurumTarihiText}" Style="{StaticResource SatirDeger}" />
+                                    <VerticalStackLayout Grid.Row="3" Grid.Column="1" Style="{StaticResource ListRowGroup}">
+                                        <Label Text="DURUM TARİHİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding DurumTarihiText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                 </Grid>
@@ -158,11 +128,7 @@
 
         <ActivityIndicator Grid.Row="1"
                            x:Name="YukleniyorIndicator"
-                           IsVisible="False"
-                           IsRunning="False"
-                           Color="{StaticResource FormAccent}"
-                           VerticalOptions="Center"
-                           HorizontalOptions="Center" />
+                           Style="{StaticResource PageBusyIndicator}" />
 
     </Grid>
 

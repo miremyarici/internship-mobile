@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# JVM cokme raporlari (Android derlemesi)
+hs_err_pid*.log
+replay_pid*.log

@@ -32,11 +32,7 @@ namespace InternshipMpbile.Pages
             // Aşağı çekerek yenilemede RefreshView kendi göstergesini gösterir,
             // ilk yüklemede ise ortadaki gösterge devreye girer.
             var ilkYukleme = !ReferansRefreshView.IsRefreshing;
-            if (ilkYukleme)
-            {
-                YukleniyorIndicator.IsVisible = true;
-                YukleniyorIndicator.IsRunning = true;
-            }
+            GostergeyiAyarla(ilkYukleme);
 
             try
             {
@@ -48,9 +44,14 @@ namespace InternshipMpbile.Pages
             }
             finally
             {
-                YukleniyorIndicator.IsVisible = false;
-                YukleniyorIndicator.IsRunning = false;
+                GostergeyiAyarla(false);
             }
+        }
+
+        private void GostergeyiAyarla(bool gorunur)
+        {
+            YukleniyorIndicator.IsVisible = gorunur;
+            YukleniyorIndicator.IsRunning = gorunur;
         }
 
         private void OnSilTapped(object? sender, TappedEventArgs e)
@@ -67,8 +68,7 @@ namespace InternshipMpbile.Pages
         private async void OnEvetClicked(object? sender, EventArgs e)
         {
             var referans = _silinecekReferans;
-            SilmeOnayiOverlay.IsVisible = false;
-            _silinecekReferans = null;
+            OnayiKapat();
 
             if (referans is null)
                 return;
@@ -85,7 +85,9 @@ namespace InternshipMpbile.Pages
         }
 
         // Hayır: hiçbir şey değişmez, kullanıcı listeye geri döner.
-        private void OnHayirClicked(object? sender, EventArgs e)
+        private void OnHayirClicked(object? sender, EventArgs e) => OnayiKapat();
+
+        private void OnayiKapat()
         {
             SilmeOnayiOverlay.IsVisible = false;
             _silinecekReferans = null;
