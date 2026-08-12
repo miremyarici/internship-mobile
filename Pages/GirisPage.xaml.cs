@@ -1,10 +1,14 @@
+using InternshipMpbile.Localization;
 using InternshipMpbile.Services;
 
 namespace InternshipMpbile.Pages
 {
     public partial class GirisPage : ContentPage
     {
-        private const string EkranAdi = "Giriş Yap";
+        // Sabit değil özellik: dil değiştirilebildiği için metin her kullanımda çevrilir.
+        private static string EkranAdi => Ceviri.Al("Giriş Yap");
+        private static string SifreAlmaBasligi => Ceviri.Al("Şifre Alma");
+        private static string Tamam => Ceviri.Al("Tamam");
 
         public GirisPage()
         {
@@ -18,7 +22,7 @@ namespace InternshipMpbile.Pages
 
             if (eposta.Length == 0 || parola.Length == 0)
             {
-                await DisplayAlert(EkranAdi, "Lütfen e-posta ve parolanızı giriniz.", "Tamam");
+                await DisplayAlert(EkranAdi, Ceviri.Al("Lütfen e-posta ve parolanızı giriniz."), Tamam);
                 return;
             }
 
@@ -30,7 +34,7 @@ namespace InternshipMpbile.Pages
 
                 if (kullanici is null)
                 {
-                    await DisplayAlert(EkranAdi, "E-posta veya parola hatalı.", "Tamam");
+                    await DisplayAlert(EkranAdi, Ceviri.Al("E-posta veya parola hatalı."), Tamam);
                     return;
                 }
 
@@ -42,7 +46,8 @@ namespace InternshipMpbile.Pages
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Giriş sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Giriş sırasında bir hata oluştu:")} {ex.Message}", Tamam);
             }
             finally
             {
@@ -63,7 +68,7 @@ namespace InternshipMpbile.Pages
 
             if (!KullaniciService.EpostaGecerliMi(eposta))
             {
-                await DisplayAlert("Şifre Alma", "Lütfen geçerli bir e-posta adresi giriniz.", "Tamam");
+                await DisplayAlert(SifreAlmaBasligi, Ceviri.Al("Lütfen geçerli bir e-posta adresi giriniz."), Tamam);
                 return;
             }
 
@@ -75,20 +80,22 @@ namespace InternshipMpbile.Pages
 
                 if (adSoyad is null)
                 {
-                    await DisplayAlert("Şifre Alma", "Bu e-posta ile kayıtlı bir kullanıcı bulunamadı.", "Tamam");
+                    await DisplayAlert(SifreAlmaBasligi,
+                        Ceviri.Al("Bu e-posta ile kayıtlı bir kullanıcı bulunamadı."), Tamam);
                     return;
                 }
 
                 await KullaniciService.GeciciSifreGonderAsync(eposta, adSoyad);
 
                 SifreAlmayiKapat();
-                await DisplayAlert("Şifre Alma",
-                    "Geçici parolanız e-posta adresinize gönderildi. Giriş yaptıktan sonra yeni parolanızı belirleyebilirsiniz.",
-                    "Tamam");
+                await DisplayAlert(SifreAlmaBasligi,
+                    Ceviri.Al("Geçici parolanız e-posta adresinize gönderildi. Giriş yaptıktan sonra yeni parolanızı belirleyebilirsiniz."),
+                    Tamam);
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Geçici parola gönderilemedi: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Geçici parola gönderilemedi:")} {ex.Message}", Tamam);
             }
             finally
             {

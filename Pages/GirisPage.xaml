@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Pages.GirisPage"
-             Title="Giriş Yap"
-             BackgroundColor="{StaticResource FormBackground}">
+             Title="{yerel:Ceviri Giriş Yap}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
     <Grid>
 
@@ -15,8 +16,8 @@
                     MaximumWidthRequest="420"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    BackgroundColor="{StaticResource FormCard}"
-                    Stroke="{StaticResource FormCardBorder}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                     StrokeThickness="1">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="10" />
@@ -32,24 +33,24 @@
                            HeightRequest="96"
                            Margin="0,0,0,4" />
 
-                    <Label Text="Giriş Yap"
+                    <Label Text="{yerel:Ceviri Giriş Yap}"
                            Style="{StaticResource PageTitle}"
                            Margin="0,0,0,4" />
 
                     <controls:MetinAlani x:Name="EpostaAlani"
-                                         Baslik="E-POSTA"
+                                         Baslik="{yerel:Ceviri E-POSTA}"
                                          Klavye="Email" />
 
                     <controls:ParolaAlani x:Name="ParolaAlani"
-                                          Baslik="PAROLA" />
+                                          Baslik="{yerel:Ceviri PAROLA}" />
 
                     <Button x:Name="GirisButonu"
-                            Text="Giriş Yap"
+                            Text="{yerel:Ceviri Giriş Yap}"
                             Clicked="OnGirisYapClicked"
                             Style="{StaticResource PrimaryButton}"
                             Margin="0,8,0,0" />
 
-                    <Label Text="Şifremi Unuttum / Şifre almak istiyorum"
+                    <Label Text="{yerel:Ceviri Şifremi Unuttum / Şifre almak istiyorum}"
                            Style="{StaticResource LinkLabel}"
                            Margin="0,2,0,0">
                         <Label.GestureRecognizers>
@@ -64,13 +65,13 @@
         <!-- Şifre alma pop-up'ı: e-posta sorulur, geçici parola o adrese gider -->
         <Grid x:Name="SifreAlmaOverlay"
               IsVisible="False"
-              BackgroundColor="{StaticResource FormOverlay}">
+              BackgroundColor="{AppThemeBinding Light={StaticResource FormOverlay}, Dark={StaticResource FormOverlayDark}}">
 
             <Border Margin="30"
                     Padding="22,24"
                     MaximumWidthRequest="360"
-                    BackgroundColor="{StaticResource FormCard}"
-                    Stroke="{StaticResource FormCardBorder}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                     StrokeThickness="1"
                     VerticalOptions="Center"
                     HorizontalOptions="Center">
@@ -83,14 +84,14 @@
 
                 <VerticalStackLayout Spacing="18">
 
-                    <Label Text="Şifre Alma"
+                    <Label Text="{yerel:Ceviri Şifre Alma}"
                            Style="{StaticResource DialogTitle}" />
 
-                    <Label Text="Geçici parolanızın gönderileceği e-posta adresini yazınız."
+                    <Label Text="{yerel:Ceviri Geçici parolanızın gönderileceği e-posta adresini yazınız.}"
                            Style="{StaticResource EmptyStateText}" />
 
                     <controls:MetinAlani x:Name="SifreAlmaEpostaAlani"
-                                         Baslik="E-POSTA"
+                                         Baslik="{yerel:Ceviri E-POSTA}"
                                          Klavye="Email" />
 
                     <ActivityIndicator x:Name="GonderiliyorIndicator"
@@ -101,14 +102,14 @@
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button x:Name="GonderButonu"
-                                Text="Gönder"
+                                Text="{yerel:Ceviri Gönder}"
                                 Style="{StaticResource ConfirmButton}"
-                                BackgroundColor="{StaticResource FormConfirmYes}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormConfirmYes}, Dark={StaticResource FormConfirmYesDark}}"
                                 Clicked="OnSifreGonderClicked" />
                         <Button Grid.Column="1"
-                                Text="Vazgeç"
+                                Text="{yerel:Ceviri Vazgeç}"
                                 Style="{StaticResource ConfirmButton}"
-                                BackgroundColor="{StaticResource FormConfirmNo}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormConfirmNo}, Dark={StaticResource FormConfirmNoDark}}"
                                 Clicked="OnSifreAlmaVazgecClicked" />
                     </Grid>
 

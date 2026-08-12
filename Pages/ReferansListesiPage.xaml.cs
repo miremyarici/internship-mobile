@@ -1,3 +1,4 @@
+﻿using InternshipMpbile.Localization;
 using InternshipMpbile.Models;
 using InternshipMpbile.Services;
 
@@ -7,6 +8,10 @@ namespace InternshipMpbile.Pages
     {
         // Pop-up açıkken silinmesi onaylanacak kayıt.
         private Referans? _silinecekReferans;
+
+        // Filtreleme bellekteki bu liste üzerinde yapılır; her filtre denemesinde
+        // veritabanına yeniden gidilmez.
+        private List<Referans> _tumReferanslar = new();
 
         public ReferansListesiPage()
         {
@@ -36,11 +41,15 @@ namespace InternshipMpbile.Pages
 
             try
             {
-                ReferansCollectionView.ItemsSource = await ReferansService.ListeleAsync();
+                _tumReferanslar = await ReferansService.ListeleAsync();
+
+                FiltreSecenekleriniTazele();
+                Filtrele();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Referanslar yüklenirken bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Referanslar yüklenirken bir hata oluştu:")} {ex.Message}", Ceviri.Al("Tamam"));
             }
             finally
             {
@@ -53,6 +62,49 @@ namespace InternshipMpbile.Pages
             YukleniyorIndicator.IsVisible = gorunur;
             YukleniyorIndicator.IsRunning = gorunur;
         }
+
+        // ==================== Filtreleme ====================
+
+        /// <summary>
+        /// Açılır liste yalnızca listede gerçekten geçen tiplerle doldurulur;
+        /// böylece hiçbir kaydı getirmeyecek bir filtre seçilemez.
+        /// </summary>
+        private void FiltreSecenekleriniTazele() =>
+            ReferansTipiFiltresi.SecenekleriTazele(
+                _tumReferanslar.Select(referans => referans.Type)
+                    .Where(tip => !string.IsNullOrWhiteSpace(tip))
+                    .Distinct()
+                    .OrderBy(tip => tip)
+                    .ToList());
+
+        private void OnFiltreleClicked(object? sender, EventArgs e) => Filtrele();
+
+        private void OnTemizleClicked(object? sender, EventArgs e)
+        {
+            ReferansTipiFiltresi.Temizle();
+            Filtrele();
+        }
+
+        private void Filtrele()
+        {
+            var listelenecek = ReferansTipiFiltresi.SecilenDeger is { } tip
+                ? _tumReferanslar.Where(referans => referans.Type == tip).ToList()
+                : _tumReferanslar;
+
+            ReferansCollectionView.ItemsSource = listelenecek;
+            BosGorunumuAyarla(listelenecek.Count < _tumReferanslar.Count);
+        }
+
+        // Liste filtre yüzünden boşaldıysa "henüz kayıt yok" demek yanıltıcı olur.
+        private void BosGorunumuAyarla(bool filtreElemis)
+        {
+            BosBaslikLabel.Text = Ceviri.Al(filtreElemis ? "Filtreye uyan referans yok" : "Henüz referans yok");
+            BosMetinLabel.Text = Ceviri.Al(filtreElemis
+                ? "Filtreyi değiştirebilir ya da Temizle ile tüm referansları görebilirsiniz."
+                : "Referans Ekleme ekranından yeni bir kayıt oluşturabilirsiniz.");
+        }
+
+        // ==================== Silme ====================
 
         private void OnSilTapped(object? sender, TappedEventArgs e)
         {
@@ -80,7 +132,8 @@ namespace InternshipMpbile.Pages
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Silme sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Silme sırasında bir hata oluştu:")} {ex.Message}", Ceviri.Al("Tamam"));
             }
         }
 

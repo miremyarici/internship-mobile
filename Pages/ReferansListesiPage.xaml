@@ -1,19 +1,51 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:InternshipMpbile.Models"
+             xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Pages.ReferansListesiPage"
              Title=""
-             BackgroundColor="{StaticResource FormBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <Label Grid.Row="0"
-               Text="Referans Listesi"
+               Text="{yerel:Ceviri Referans Listesi}"
                Style="{StaticResource PageTitle}"
                Margin="0,18,0,10" />
 
-        <RefreshView Grid.Row="1"
+        <!-- Filtre kartı: referans tipine göre süzme -->
+        <Border Grid.Row="1"
+                Margin="14,0,14,10"
+                Padding="14,12"
+                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout Spacing="14">
+
+                <controls:SeciciAlan x:Name="ReferansTipiFiltresi"
+                                     Baslik="{yerel:Ceviri REFERANS TİPİ}"
+                                     YerTutucu="{yerel:Ceviri Tümü}" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Button Text="{yerel:Ceviri Filtrele}"
+                            Clicked="OnFiltreleClicked"
+                            Style="{StaticResource PrimaryButton}" />
+                    <Button Grid.Column="1"
+                            Text="{yerel:Ceviri Temizle}"
+                            Clicked="OnTemizleClicked"
+                            Style="{StaticResource PrimaryButton}" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </Border>
+
+        <RefreshView Grid.Row="2"
                      x:Name="ReferansRefreshView"
                      Refreshing="OnRefreshing">
             <CollectionView x:Name="ReferansCollectionView"
@@ -25,9 +57,11 @@
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="30,60" Spacing="8" HorizontalOptions="Center">
-                        <Label Text="Henüz referans yok"
+                        <Label x:Name="BosBaslikLabel"
+                               Text="{yerel:Ceviri Henüz referans yok}"
                                Style="{StaticResource EmptyStateTitle}" />
-                        <Label Text="Referans Ekleme ekranından yeni bir kayıt oluşturabilirsiniz."
+                        <Label x:Name="BosMetinLabel"
+                               Text="{yerel:Ceviri Referans Ekleme ekranından yeni bir kayıt oluşturabilirsiniz.}"
                                Style="{StaticResource EmptyStateText}" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
@@ -35,8 +69,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Referans">
                         <Border Padding="16,14"
-                                BackgroundColor="{StaticResource FormCard}"
-                                Stroke="{StaticResource FormCardBorder}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                                 StrokeThickness="1">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10" />
@@ -50,12 +84,12 @@
                                 <VerticalStackLayout Spacing="9" VerticalOptions="Center">
 
                                     <VerticalStackLayout Style="{StaticResource ListRowGroup}">
-                                        <Label Text="REFERANS TİPİ" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding Type}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri REFERANS TİPİ}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding Type, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Style="{StaticResource ListRowGroup}">
-                                        <Label Text="REFERANS ALT TİPİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{yerel:Ceviri REFERANS ALT TİPİ}" Style="{StaticResource ListRowLabel}" />
                                         <Label Text="{Binding Subtype}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
@@ -64,8 +98,8 @@
                                 <!-- Çöp kutusu: silme onayı pop-up'ını açar -->
                                 <Border Grid.Column="1"
                                         Padding="9"
-                                        BackgroundColor="{StaticResource FormButtonBackground}"
-                                        Stroke="{StaticResource FormFieldBorder}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource FormButtonBackground}, Dark={StaticResource FormButtonBackgroundDark}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource FormFieldBorder}, Dark={StaticResource FormFieldBorderDark}}"
                                         StrokeThickness="1"
                                         VerticalOptions="Center">
                                     <Border.StrokeShape>
@@ -75,7 +109,7 @@
                                         <TapGestureRecognizer Tapped="OnSilTapped" />
                                     </Border.GestureRecognizers>
                                     <Path Data="M3,5 L17,5 M8,5 L8,3 L12,3 L12,5 M5,5 L5.9,17 L14.1,17 L15,5 M8.4,8 L8.8,14 M11.6,8 L11.2,14"
-                                          Stroke="{StaticResource FormAccent}"
+                                          Stroke="{AppThemeBinding Light={StaticResource FormAccent}, Dark={StaticResource FormAccentDark}}"
                                           StrokeThickness="1.6"
                                           Fill="Transparent"
                                           Aspect="Uniform"
@@ -92,22 +126,22 @@
             </CollectionView>
         </RefreshView>
 
-        <ActivityIndicator Grid.Row="1"
+        <ActivityIndicator Grid.Row="2"
                            x:Name="YukleniyorIndicator"
                            Style="{StaticResource PageBusyIndicator}" />
 
         <!-- Silme onayı pop-up'ı: liste üzerine binen tam ekran karartma + kart -->
         <Grid x:Name="SilmeOnayiOverlay"
               Grid.Row="0"
-              Grid.RowSpan="2"
+              Grid.RowSpan="3"
               IsVisible="False"
-              BackgroundColor="{StaticResource FormOverlay}">
+              BackgroundColor="{AppThemeBinding Light={StaticResource FormOverlay}, Dark={StaticResource FormOverlayDark}}">
 
             <Border Margin="30"
                     Padding="22,24"
                     MaximumWidthRequest="340"
-                    BackgroundColor="{StaticResource FormCard}"
-                    Stroke="{StaticResource FormCardBorder}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                     StrokeThickness="1"
                     VerticalOptions="Center"
                     HorizontalOptions="Center">
@@ -120,21 +154,21 @@
 
                 <VerticalStackLayout Spacing="20">
 
-                    <Label Text="Referansı Silmek İstediğinizden Emin Misiniz?"
-                           TextColor="{StaticResource FormTitle}"
-                           FontFamily="OpenSansSemibold"
+                    <Label Text="{yerel:Ceviri Referansı Silmek İstediğinizden Emin Misiniz?}"
+                           TextColor="{AppThemeBinding Light={StaticResource FormTitle}, Dark={StaticResource FormTitleDark}}"
+                           FontFamily="MerriweatherBold"
                            FontSize="16"
                            HorizontalTextAlignment="Center" />
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <Button Text="Evet"
+                        <Button Text="{yerel:Ceviri Evet}"
                                 Style="{StaticResource ConfirmButton}"
-                                BackgroundColor="{StaticResource FormConfirmYes}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormConfirmYes}, Dark={StaticResource FormConfirmYesDark}}"
                                 Clicked="OnEvetClicked" />
                         <Button Grid.Column="1"
-                                Text="Hayır"
+                                Text="{yerel:Ceviri Hayır}"
                                 Style="{StaticResource ConfirmButton}"
-                                BackgroundColor="{StaticResource FormConfirmNo}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormConfirmNo}, Dark={StaticResource FormConfirmNoDark}}"
                                 Clicked="OnHayirClicked" />
                     </Grid>
 

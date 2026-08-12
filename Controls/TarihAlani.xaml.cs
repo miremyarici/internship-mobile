@@ -19,6 +19,13 @@ namespace InternshipMpbile.Controls
 
         public DateTime Tarih => DegerPicker.Date;
 
+        /// <summary>
+        /// Kullanıcı gerçekten bir tarih seçti mi? DatePicker hiç dokunulmasa da
+        /// bugünün tarihini taşıdığı için, alanın boş sayılıp sayılmayacağına
+        /// yer tutucunun görünürlüğüne bakılarak karar verilir.
+        /// </summary>
+        public bool Secildi => !YerTutucuLabel.IsVisible;
+
         public void Temizle()
         {
             DegerPicker.Date = DateTime.Today;

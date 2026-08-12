@@ -20,6 +20,23 @@ namespace InternshipMpbile.Services
             FROM BasvuruFormu
             ORDER BY Id DESC";
 
+        private const string ProjeAdiVarMiQuery = @"
+            SELECT COUNT(*) FROM BasvuruFormu WHERE ProjeAdi = @ProjeAdi";
+
+        /// <summary>
+        /// Aynı proje adıyla kayıtlı bir başvuru var mı? Karşılaştırma sunucunun
+        /// harf duyarsız sıralama düzenine bırakılır, "Sanat" ile "sanat" aynı sayılır.
+        /// </summary>
+        public static async Task<bool> ProjeAdiVarMiAsync(string projeAdi)
+        {
+            using var connection = await Database.AcikBaglantiAsync();
+            using var command = new SqlCommand(ProjeAdiVarMiQuery, connection);
+
+            command.Parameters.AddWithValue("@ProjeAdi", projeAdi);
+
+            return (int)(await command.ExecuteScalarAsync() ?? 0) > 0;
+        }
+
         public static async Task KaydetAsync(Basvuru basvuru)
         {
             using var connection = await Database.AcikBaglantiAsync();

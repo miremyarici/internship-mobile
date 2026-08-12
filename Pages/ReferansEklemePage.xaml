@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Pages.ReferansEklemePage"
              Title=""
-             BackgroundColor="{StaticResource FormBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
     <ScrollView>
         <!-- Beyaz form kartı -->
         <Border Margin="14,16,14,28"
                 Padding="20,22,20,24"
-                BackgroundColor="{StaticResource FormCard}"
-                Stroke="{StaticResource FormCardBorder}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                 StrokeThickness="1">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="10" />
@@ -22,20 +23,20 @@
 
             <VerticalStackLayout Spacing="18">
 
-                <Label Text="Referans Ekleme"
+                <Label Text="{yerel:Ceviri Referans Ekleme}"
                        Style="{StaticResource PageTitle}"
                        Margin="0,0,0,4" />
 
                 <controls:SeciciAlan x:Name="ReferansTipiAlani"
-                                     Baslik="REFERANS TİPİ"
-                                     SecimDegisti="OnReferansTipiDegisti" />
+                                     Baslik="{yerel:Ceviri REFERANS TİPİ}" />
 
-                <controls:SeciciAlan x:Name="ReferansAltTipiAlani"
-                                     Baslik="REFERANS ALT TİPİ"
-                                     YerTutucu="Önce referans tipi seçiniz"
-                                     Secilebilir="False" />
+                <!-- Serbest metin: buraya yazılan değer kaydedildikten sonra
+                     Başvuru Formu'nda ilgili tipin açılır listesinde görünür. -->
+                <controls:MetinAlani x:Name="ReferansAltTipiAlani"
+                                     Baslik="{yerel:Ceviri REFERANS ALT TİPİ}" />
 
-                <Button Text="Kaydet"
+                <Button x:Name="KaydetButonu"
+                        Text="{yerel:Ceviri Kaydet}"
                         Clicked="OnKaydetClicked"
                         Style="{StaticResource PrimaryButton}"
                         Margin="0,10,0,0" />

@@ -1,3 +1,4 @@
+using InternshipMpbile.Localization;
 using InternshipMpbile.Pages;
 using InternshipMpbile.Services;
 
@@ -8,6 +9,11 @@ namespace InternshipMpbile
         public App()
         {
             InitializeComponent();
+
+            // Tema işletim sisteminin ayarından değil kullanıcının menüdeki
+            // seçiminden gelir; bu seçim cihazda saklandığı için ilk ekran
+            // doğrudan doğru modla açılır ve bir anlık renk sıçraması olmaz.
+            UserAppTheme = Tema.Baslangic;
         }
 
         // Uygulama giriş ekranıyla açılır; menülü ana ekrana ancak giriş
@@ -25,6 +31,17 @@ namespace InternshipMpbile
         {
             Oturum.Bitir();
             KokSayfayiDegistir(new GirisPage());
+        }
+
+        /// <summary>
+        /// Dili değiştirir ve menülü ana ekranı baştan kurar. Metinler sayfa
+        /// kurulurken çevrildiği için, dilin her yere işlemesinin yolu arayüzü
+        /// yeniden oluşturmaktır. Oturum açık kaldığı için kullanıcı düşmez.
+        /// </summary>
+        public static void DiliDegistir(Dil dil)
+        {
+            Ceviri.AktifDil = dil;
+            KokSayfayiDegistir(new AppShell());
         }
 
         private static void KokSayfayiDegistir(Page sayfa)

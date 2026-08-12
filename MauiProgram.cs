@@ -13,6 +13,10 @@ namespace InternshipMpbile
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("Merriweather-Regular.ttf", "MerriweatherRegular");
+                    fonts.AddFont("Merriweather-Bold.ttf", "MerriweatherBold");
+                    fonts.AddFont("SourceSans3-Regular.ttf", "SourceSans3Regular");
+                    fonts.AddFont("SourceSans3-Bold.ttf", "SourceSans3Bold");
                 });
 
 #if ANDROID

@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Controls.SeciciAlan">
 
     <VerticalStackLayout Style="{StaticResource FieldGroup}">
         <Label x:Name="BaslikLabel" Style="{StaticResource FieldLabel}" />
         <Border Style="{StaticResource FieldBorder}">
             <Grid ColumnDefinitions="*,Auto">
+
+                <!-- Kutuda görünen metin. Picker'ın kendi metni ve başlığı saydam
+                     bırakılır, çünkü seçim yapıldığı halde başlığı ekranda tutmaya
+                     devam edebiliyor; ne yazacağına kod tarafında karar verilir.
+                     TarihAlani da aynı yöntemi kullanır. -->
+                <Label x:Name="GorunenDegerLabel"
+                       Style="{StaticResource FieldOverlayText}" />
+
+                <!-- Saydam ama üstte durur: dokunmayı alıp listeyi açan katman -->
                 <Picker x:Name="DegerPicker"
-                        Title="Seçiniz"
+                        Title="{yerel:Ceviri Seçiniz}"
                         Style="{StaticResource FieldPicker}"
+                        TextColor="Transparent"
+                        TitleColor="Transparent"
                         SelectedIndexChanged="OnPickerSecimiDegisti" />
-                <ActivityIndicator x:Name="YukleniyorIndicator"
-                                   Style="{StaticResource FieldBusyIndicator}"
-                                   IsVisible="False"
-                                   IsRunning="False" />
+
                 <Path Grid.Column="1"
                       Style="{StaticResource FieldIcon}"
                       Data="M0,0 L5,5 L10,0"

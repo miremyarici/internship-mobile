@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:InternshipMpbile"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -10,6 +11,9 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/FormStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Listelerde veritabanından gelen değerleri çevirerek gösterir -->
+            <yerel:CeviriConverter x:Key="Ceviri" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

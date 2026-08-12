@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Pages.BasvuruFormuPage"
              Title=""
-             BackgroundColor="{StaticResource FormBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
     <Grid>
 
@@ -12,8 +13,8 @@
             <!-- Beyaz form kartı -->
             <Border Margin="14,16,14,28"
                     Padding="20,22,20,24"
-                    BackgroundColor="{StaticResource FormCard}"
-                    Stroke="{StaticResource FormCardBorder}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                     StrokeThickness="1">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="10" />
@@ -24,42 +25,43 @@
 
                 <VerticalStackLayout Spacing="18">
 
-                    <Label Text="Başvuru Formu"
+                    <Label Text="{yerel:Ceviri Başvuru Formu}"
                            Style="{StaticResource PageTitle}"
                            Margin="0,0,0,4" />
 
                     <controls:MetinAlani x:Name="ProjeAdiAlani"
-                                         Baslik="PROJE ADI" />
+                                         Baslik="{yerel:Ceviri PROJE ADI}" />
 
                     <controls:SeciciAlan x:Name="BasvuranBirimAlani"
-                                         Baslik="BAŞVURAN BİRİM" />
+                                         Baslik="{yerel:Ceviri BAŞVURAN BİRİM}" />
 
                     <controls:SeciciAlan x:Name="BasvuruYapilanProjeAlani"
-                                         Baslik="BAŞVURU YAPILAN PROJE" />
+                                         Baslik="{yerel:Ceviri BAŞVURU YAPILAN PROJE}" />
 
                     <controls:SeciciAlan x:Name="BasvuruYapilanTurAlani"
-                                         Baslik="BAŞVURU YAPILAN TÜR" />
+                                         Baslik="{yerel:Ceviri BAŞVURU YAPILAN TÜR}" />
 
                     <controls:SeciciAlan x:Name="KatilimciTuruAlani"
-                                         Baslik="KATILIMCI TÜRÜ" />
+                                         Baslik="{yerel:Ceviri KATILIMCI TÜRÜ}" />
 
                     <controls:SeciciAlan x:Name="BasvuruDonemiAlani"
-                                         Baslik="BAŞVURU DÖNEMİ" />
+                                         Baslik="{yerel:Ceviri BAŞVURU DÖNEMİ}" />
 
                     <controls:TarihAlani x:Name="BasvuruTarihiAlani"
-                                         Baslik="BAŞVURU TARİHİ" />
+                                         Baslik="{yerel:Ceviri BAŞVURU TARİHİ}" />
 
                     <controls:SeciciAlan x:Name="BasvuruDurumuAlani"
-                                         Baslik="BAŞVURU DURUMU" />
+                                         Baslik="{yerel:Ceviri BAŞVURU DURUMU}" />
 
                     <controls:TarihAlani x:Name="DurumTarihiAlani"
-                                         Baslik="DURUM TARİHİ" />
+                                         Baslik="{yerel:Ceviri DURUM TARİHİ}" />
 
                     <controls:MetinAlani x:Name="HibeTutariAlani"
-                                         Baslik="HİBE TUTARI"
+                                         Baslik="{yerel:Ceviri HİBE TUTARI}"
                                          Klavye="Numeric" />
 
-                    <Button Text="Kaydet"
+                    <Button x:Name="KaydetButonu"
+                            Text="{yerel:Ceviri Kaydet}"
                             Clicked="OnKaydetClicked"
                             Style="{StaticResource PrimaryButton}"
                             Margin="0,10,0,0" />
@@ -72,14 +74,14 @@
              parola değiştirilmeden kapanmayan pop-up -->
         <Grid x:Name="ParolaDegistirOverlay"
               IsVisible="False"
-              BackgroundColor="{StaticResource FormOverlay}">
+              BackgroundColor="{AppThemeBinding Light={StaticResource FormOverlay}, Dark={StaticResource FormOverlayDark}}">
 
             <ScrollView>
                 <Border Margin="24,30"
                         Padding="22,24"
                         MaximumWidthRequest="380"
-                        BackgroundColor="{StaticResource FormCard}"
-                        Stroke="{StaticResource FormCardBorder}"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                        Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                         StrokeThickness="1"
                         VerticalOptions="Center"
                         HorizontalOptions="Center">
@@ -92,23 +94,23 @@
 
                     <VerticalStackLayout Spacing="18">
 
-                        <Label Text="Parolayı Değiştir"
+                        <Label Text="{yerel:Ceviri Parolayı Değiştir}"
                                Style="{StaticResource DialogTitle}" />
 
-                        <Label Text="Geçici parolanızla giriş yaptınız. Devam etmek için yeni parolanızı belirleyiniz."
+                        <Label Text="{yerel:Ceviri Geçici parolanızla giriş yaptınız. Devam etmek için yeni parolanızı belirleyiniz.}"
                                Style="{StaticResource EmptyStateText}" />
 
                         <controls:ParolaAlani x:Name="EskiParolaAlani"
-                                              Baslik="ESKİ PAROLA" />
+                                              Baslik="{yerel:Ceviri ESKİ PAROLA}" />
 
                         <controls:ParolaAlani x:Name="YeniParolaAlani"
-                                              Baslik="YENİ PAROLA" />
+                                              Baslik="{yerel:Ceviri YENİ PAROLA}" />
 
                         <controls:ParolaAlani x:Name="YeniParolaTekrarAlani"
-                                              Baslik="YENİ PAROLA (TEKRAR)" />
+                                              Baslik="{yerel:Ceviri YENİ PAROLA (TEKRAR)}" />
 
                         <Button x:Name="ParolaKaydetButonu"
-                                Text="Kaydet"
+                                Text="{yerel:Ceviri Kaydet}"
                                 Clicked="OnParolaKaydetClicked"
                                 Style="{StaticResource PrimaryButton}"
                                 Margin="0,6,0,0" />

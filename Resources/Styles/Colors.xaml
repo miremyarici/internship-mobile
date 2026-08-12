@@ -9,14 +9,11 @@
     <Color x:Key="Primary">#512BD4</Color>
     <Color x:Key="PrimaryDark">#ac99ea</Color>
     <Color x:Key="PrimaryDarkText">#242424</Color>
-    <Color x:Key="Secondary">#DFD8F7</Color>
     <Color x:Key="SecondaryDarkText">#9880e5</Color>
-    <Color x:Key="Tertiary">#2B0B98</Color>
 
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
-    <Color x:Key="MidnightBlue">#190649</Color>
     <Color x:Key="OffBlack">#1f1f1f</Color>
 
     <Color x:Key="Gray100">#E1E1E1</Color>
@@ -28,40 +25,49 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
-    <!-- Başvuru Formu ekranı paleti -->
-    <Color x:Key="FormBackground">#F4F2F7</Color>
+    <!-- Başvuru Formu ekranı paleti (açık mod) -->
+    <Color x:Key="FormBackground">#DBC1B2</Color>
     <Color x:Key="FormCard">#FFFFFF</Color>
     <Color x:Key="FormCardBorder">#EAE7F0</Color>
-    <Color x:Key="FormTitle">#5B5573</Color>
-    <Color x:Key="FormFieldLabel">#8C8899</Color>
+    <Color x:Key="FormTitle">#3D0A06</Color>
+    <Color x:Key="FormFieldLabel">#7D200E</Color>
     <Color x:Key="FormFieldBorder">#DCD8E3</Color>
-    <Color x:Key="FormFieldText">#33313D</Color>
-    <Color x:Key="FormPlaceholder">#A9A5B5</Color>
+    <Color x:Key="FormFieldText">#2A1708</Color>
+    <Color x:Key="FormPlaceholder">#A58570</Color>
     <Color x:Key="FormButtonBackground">#EDEBF1</Color>
-    <Color x:Key="FormButtonText">#7A7788</Color>
+    <Color x:Key="FormButtonText">#AD746D</Color>
     <Color x:Key="FormAccent">#C0392B</Color>
 
-    <!-- Silme onayı pop-up'ı -->
+    <!-- Silme onayı pop-up'ı (açık mod) -->
     <Color x:Key="FormOverlay">#66000000</Color>
     <Color x:Key="FormConfirmYes">#2E9E5B</Color>
-    <Color x:Key="FormConfirmNo">#9C9AA5</Color>
+    <Color x:Key="FormConfirmNo">#A58570</Color>
 
-    <!-- Sağ üstte beliren bildirim ve menüdeki çıkış bağlantısı -->
+    <!-- Sağ üstte beliren bildirim ve menüdeki çıkış bağlantısı (açık mod) -->
     <Color x:Key="FormToast">#2E9E5B</Color>
     <Color x:Key="FormLogout">#C0392B</Color>
 
-    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
-    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
-    <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
-    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}"/>
-    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}"/>
-
-    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}"/>
-    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}"/>
-    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}"/>
-    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}"/>
-    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}"/>
-    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
-    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
-    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+    <!--
+      Karanlık mod karşılıkları. Değerler tasarımdaki koyu ekran taslaklarından
+      alınmıştır. Her FormXxx anahtarının karşılığı FormXxxDark burada durur;
+      FormStyles.xaml ve sayfalardaki her kullanım AppThemeBinding ile bu ikiliyi
+      birlikte referans eder, böylece tema değişince MAUI zaten ekrandaki her
+      elemanı kendisi günceller ve tek bir sayfa bile yeniden kurulmaz.
+    -->
+    <Color x:Key="FormBackgroundDark">#1A0A08</Color>
+    <Color x:Key="FormCardDark">#2D1411</Color>
+    <Color x:Key="FormCardBorderDark">#46301F</Color>
+    <Color x:Key="FormTitleDark">#F8D3BB</Color>
+    <Color x:Key="FormFieldLabelDark">#AD746D</Color>
+    <Color x:Key="FormFieldBorderDark">#57423D</Color>
+    <Color x:Key="FormFieldTextDark">#F8D3BB</Color>
+    <Color x:Key="FormPlaceholderDark">#A58B85</Color>
+    <Color x:Key="FormButtonBackgroundDark">#7D200E</Color>
+    <Color x:Key="FormButtonTextDark">#F8D3BB</Color>
+    <Color x:Key="FormAccentDark">#FFB4AB</Color>
+    <Color x:Key="FormOverlayDark">#CC000000</Color>
+    <Color x:Key="FormConfirmYesDark">#2E9E5B</Color>
+    <Color x:Key="FormConfirmNoDark">#6B3C37</Color>
+    <Color x:Key="FormToastDark">#2E9E5B</Color>
+    <Color x:Key="FormLogoutDark">#FFB4AB</Color>
 </ResourceDictionary>

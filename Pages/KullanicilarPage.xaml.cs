@@ -1,3 +1,4 @@
+﻿using InternshipMpbile.Localization;
 using InternshipMpbile.Models;
 using InternshipMpbile.Services;
 
@@ -5,7 +6,9 @@ namespace InternshipMpbile.Pages
 {
     public partial class KullanicilarPage : ContentPage
     {
-        private const string EkranAdi = "Kullanıcı Ekleme";
+        // Sabit değil özellik: dil değiştirilebildiği için metin her kullanımda çevrilir.
+        private static string EkranAdi => Ceviri.Al("Kullanıcı Ekleme");
+        private static string Tamam => Ceviri.Al("Tamam");
 
         // Onay pop-up'ları açıkken işlem yapılacak kayıtlar.
         private Kullanici? _kaydedilecekKullanici;
@@ -14,7 +17,7 @@ namespace InternshipMpbile.Pages
         public KullanicilarPage()
         {
             InitializeComponent();
-            RolAlani.Secenekler = KullaniciService.Roller;
+            RolAlani.SecenekleriTazele(KullaniciService.Roller);
         }
 
         protected override async void OnAppearing()
@@ -45,7 +48,8 @@ namespace InternshipMpbile.Pages
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Kullanıcılar yüklenirken bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Kullanıcılar yüklenirken bir hata oluştu:")} {ex.Message}", Tamam);
             }
             finally
             {
@@ -70,13 +74,13 @@ namespace InternshipMpbile.Pages
             if (isim.Length == 0 || soyisim.Length == 0 || eposta.Length == 0 ||
                 RolAlani.SecilenDeger is not string rol)
             {
-                await DisplayAlert(EkranAdi, "Lütfen tüm alanları doldurun.", "Tamam");
+                await DisplayAlert(EkranAdi, Ceviri.Al("Lütfen tüm alanları doldurun."), Tamam);
                 return;
             }
 
             if (!KullaniciService.EpostaGecerliMi(eposta))
             {
-                await DisplayAlert(EkranAdi, "Lütfen geçerli bir e-posta adresi giriniz.", "Tamam");
+                await DisplayAlert(EkranAdi, Ceviri.Al("Lütfen geçerli bir e-posta adresi giriniz."), Tamam);
                 return;
             }
 
@@ -84,13 +88,14 @@ namespace InternshipMpbile.Pages
             {
                 if (await KullaniciService.EpostaVarMiAsync(eposta))
                 {
-                    await DisplayAlert(EkranAdi, "Bu e-posta ile kayıtlı bir kullanıcı zaten var.", "Tamam");
+                    await DisplayAlert(EkranAdi, Ceviri.Al("Bu e-posta ile kayıtlı bir kullanıcı zaten var."), Tamam);
                     return;
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Kayıt sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Kayıt sırasında bir hata oluştu:")} {ex.Message}", Tamam);
                 return;
             }
 
@@ -111,7 +116,7 @@ namespace InternshipMpbile.Pages
             OnayIsimLabel.Text = kullanici.Isim;
             OnaySoyisimLabel.Text = kullanici.Soyisim;
             OnayEpostaLabel.Text = kullanici.Eposta;
-            OnayRolLabel.Text = kullanici.Rol;
+            OnayRolLabel.Text = Ceviri.Al(kullanici.Rol);
         }
 
         private async void OnKayitEvetClicked(object? sender, EventArgs e)
@@ -128,11 +133,12 @@ namespace InternshipMpbile.Pages
 
                 FormuTemizle();
                 await KullanicilariYukleAsync();
-                await BildirimGosterAsync("Kullanıcı başarıyla eklendi.");
+                await BildirimGosterAsync(Ceviri.Al("Kullanıcı başarıyla eklendi."));
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Kayıt sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Kayıt sırasında bir hata oluştu:")} {ex.Message}", Tamam);
             }
         }
 
@@ -180,7 +186,8 @@ namespace InternshipMpbile.Pages
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Silme sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Silme sırasında bir hata oluştu:")} {ex.Message}", Tamam);
             }
         }
 

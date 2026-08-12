@@ -1,19 +1,119 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:InternshipMpbile.Models"
+             xmlns:controls="clr-namespace:InternshipMpbile.Controls"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
              x:Class="InternshipMpbile.Pages.BasvuruListesiPage"
              Title=""
-             BackgroundColor="{StaticResource FormBackground}">
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
 
         <Label Grid.Row="0"
-               Text="Başvuru Listesi"
+               Text="{yerel:Ceviri Başvuru Listesi}"
                Style="{StaticResource PageTitle}"
                Margin="0,18,0,10" />
 
-        <RefreshView Grid.Row="1"
+        <!-- Filtre kartı: başlığa dokunulunca alanlar açılıp kapanır, böylece
+             kullanılmadığı sürece listeden yer çalmaz. -->
+        <Border Grid.Row="1"
+                Margin="14,0,14,10"
+                Padding="14,12"
+                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnFiltreBasligiTapped" />
+                    </Grid.GestureRecognizers>
+
+                    <Label Text="{yerel:Ceviri FİLTRELE}"
+                           Style="{StaticResource ListRowLabel}"
+                           VerticalOptions="Center"
+                           InputTransparent="True" />
+
+                    <Path x:Name="FiltreOku"
+                          Grid.Column="1"
+                          Style="{StaticResource FieldIcon}"
+                          Data="M0,0 L5,5 L10,0"
+                          HeightRequest="6"
+                          WidthRequest="12"
+                          VerticalOptions="Center"
+                          InputTransparent="True" />
+                </Grid>
+
+                <VerticalStackLayout x:Name="FiltrePaneli"
+                                     IsVisible="False"
+                                     Spacing="14"
+                                     Margin="0,14,0,0">
+
+                    <Grid ColumnDefinitions="*,*"
+                          RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnSpacing="12"
+                          RowSpacing="14">
+
+                        <controls:SeciciAlan x:Name="BasvuranBirimFiltresi"
+                                             Grid.Row="0" Grid.Column="0"
+                                             Baslik="{yerel:Ceviri BAŞVURAN BİRİM}"
+                                             YerTutucu="{yerel:Ceviri Tümü}" />
+
+                        <controls:SeciciAlan x:Name="BasvuruYapilanProjeFiltresi"
+                                             Grid.Row="0" Grid.Column="1"
+                                             Baslik="{yerel:Ceviri YAPILAN PROJE}"
+                                             YerTutucu="{yerel:Ceviri Tümü}" />
+
+                        <controls:SeciciAlan x:Name="BasvuruYapilanTurFiltresi"
+                                             Grid.Row="1" Grid.Column="0"
+                                             Baslik="{yerel:Ceviri YAPILAN TÜR}"
+                                             YerTutucu="{yerel:Ceviri Tümü}" />
+
+                        <controls:SeciciAlan x:Name="KatilimciTuruFiltresi"
+                                             Grid.Row="1" Grid.Column="1"
+                                             Baslik="{yerel:Ceviri KATILIMCI TÜRÜ}"
+                                             YerTutucu="{yerel:Ceviri Tümü}" />
+
+                        <controls:SeciciAlan x:Name="BasvuruDonemiFiltresi"
+                                             Grid.Row="2" Grid.Column="0"
+                                             Baslik="{yerel:Ceviri BAŞVURU DÖNEMİ}"
+                                             YerTutucu="{yerel:Ceviri Tümü}" />
+
+                        <controls:MetinAlani x:Name="HibeTutariFiltresi"
+                                             Grid.Row="2" Grid.Column="1"
+                                             Baslik="{yerel:Ceviri HİBE TUTARI}"
+                                             Klavye="Numeric" />
+
+                        <controls:TarihAlani x:Name="BasvuruTarihiFiltresi"
+                                             Grid.Row="3" Grid.Column="0"
+                                             Baslik="{yerel:Ceviri BAŞVURU TARİHİ}" />
+
+                        <controls:TarihAlani x:Name="DurumTarihiFiltresi"
+                                             Grid.Row="3" Grid.Column="1"
+                                             Baslik="{yerel:Ceviri DURUM TARİHİ}" />
+
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Button Text="{yerel:Ceviri Filtrele}"
+                                Clicked="OnFiltreleClicked"
+                                Style="{StaticResource PrimaryButton}" />
+                        <Button Grid.Column="1"
+                                Text="{yerel:Ceviri Temizle}"
+                                Clicked="OnTemizleClicked"
+                                Style="{StaticResource PrimaryButton}" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+
+        <RefreshView Grid.Row="2"
                      x:Name="BasvuruRefreshView"
                      Refreshing="OnRefreshing">
             <CollectionView x:Name="BasvuruCollectionView"
@@ -25,9 +125,11 @@
 
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="30,60" Spacing="8" HorizontalOptions="Center">
-                        <Label Text="Henüz başvuru yok"
+                        <Label x:Name="BosBaslikLabel"
+                               Text="{yerel:Ceviri Henüz başvuru yok}"
                                Style="{StaticResource EmptyStateTitle}" />
-                        <Label Text="Başvuru Formu ekranından yeni bir kayıt oluşturabilirsiniz."
+                        <Label x:Name="BosMetinLabel"
+                               Text="{yerel:Ceviri Başvuru Formu ekranından yeni bir kayıt oluşturabilirsiniz.}"
                                Style="{StaticResource EmptyStateText}" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
@@ -35,8 +137,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Basvuru">
                         <Border Padding="16,14"
-                                BackgroundColor="{StaticResource FormCard}"
-                                Stroke="{StaticResource FormCardBorder}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                                 StrokeThickness="1">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10" />
@@ -50,70 +152,70 @@
                                 <!-- Başlık: proje adı + durum rozeti -->
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                     <Label Text="{Binding ProjeAdi}"
-                                           TextColor="{StaticResource FormTitle}"
-                                           FontFamily="OpenSansSemibold"
+                                           TextColor="{AppThemeBinding Light={StaticResource FormTitle}, Dark={StaticResource FormTitleDark}}"
+                                           FontFamily="MerriweatherBold"
                                            FontSize="15"
                                            VerticalOptions="Center" />
                                     <Border Grid.Column="1"
-                                            Padding="9,3"
-                                            BackgroundColor="{StaticResource FormButtonBackground}"
-                                            Stroke="{StaticResource FormFieldBorder}"
+                                            Padding="12,4"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource FormButtonBackground}, Dark={StaticResource FormButtonBackgroundDark}}"
+                                            Stroke="{AppThemeBinding Light={StaticResource FormFieldBorder}, Dark={StaticResource FormFieldBorderDark}}"
                                             StrokeThickness="1"
                                             VerticalOptions="Center">
                                         <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="10" />
+                                            <RoundRectangle CornerRadius="20" />
                                         </Border.StrokeShape>
-                                        <Label Text="{Binding BasvuruDurumu}"
-                                               TextColor="{StaticResource FormButtonText}"
-                                               FontFamily="OpenSansSemibold"
+                                        <Label Text="{Binding BasvuruDurumu, Converter={StaticResource Ceviri}}"
+                                               TextColor="{AppThemeBinding Light={StaticResource FormButtonText}, Dark={StaticResource FormButtonTextDark}}"
+                                               FontFamily="SourceSans3Bold"
                                                FontSize="11" />
                                     </Border>
                                 </Grid>
 
                                 <BoxView HeightRequest="1"
-                                         Color="{StaticResource FormCardBorder}"
+                                         Color="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
                                          HorizontalOptions="Fill" />
 
                                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto"
                                       ColumnSpacing="12" RowSpacing="9">
 
                                     <VerticalStackLayout Grid.Row="0" Grid.Column="0" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="BAŞVURAN BİRİM" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding BasvuranBirim}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri BAŞVURAN BİRİM}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuranBirim, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="0" Grid.Column="1" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="BAŞVURU DÖNEMİ" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding BasvuruDonemi}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri BAŞVURU DÖNEMİ}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruDonemi, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="1" Grid.Column="0" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="YAPILAN PROJE" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding BasvuruYapilanProje}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri YAPILAN PROJE}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruYapilanProje, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="1" Grid.Column="1" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="YAPILAN TÜR" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding BasvuruYapilanTur}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri YAPILAN TÜR}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding BasvuruYapilanTur, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="2" Grid.Column="0" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="KATILIMCI TÜRÜ" Style="{StaticResource ListRowLabel}" />
-                                        <Label Text="{Binding KatilimciTuru}" Style="{StaticResource ListRowValue}" />
+                                        <Label Text="{yerel:Ceviri KATILIMCI TÜRÜ}" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{Binding KatilimciTuru, Converter={StaticResource Ceviri}}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="2" Grid.Column="1" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="HİBE TUTARI" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{yerel:Ceviri HİBE TUTARI}" Style="{StaticResource ListRowLabel}" />
                                         <Label Text="{Binding HibeTutariText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="3" Grid.Column="0" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="BAŞVURU TARİHİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{yerel:Ceviri BAŞVURU TARİHİ}" Style="{StaticResource ListRowLabel}" />
                                         <Label Text="{Binding BasvuruTarihiText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
                                     <VerticalStackLayout Grid.Row="3" Grid.Column="1" Style="{StaticResource ListRowGroup}">
-                                        <Label Text="DURUM TARİHİ" Style="{StaticResource ListRowLabel}" />
+                                        <Label Text="{yerel:Ceviri DURUM TARİHİ}" Style="{StaticResource ListRowLabel}" />
                                         <Label Text="{Binding DurumTarihiText}" Style="{StaticResource ListRowValue}" />
                                     </VerticalStackLayout>
 
@@ -126,7 +228,7 @@
             </CollectionView>
         </RefreshView>
 
-        <ActivityIndicator Grid.Row="1"
+        <ActivityIndicator Grid.Row="2"
                            x:Name="YukleniyorIndicator"
                            Style="{StaticResource PageBusyIndicator}" />
 

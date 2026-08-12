@@ -1,3 +1,5 @@
+using InternshipMpbile.Controls;
+using InternshipMpbile.Localization;
 using InternshipMpbile.Models;
 using InternshipMpbile.Services;
 
@@ -5,51 +7,110 @@ namespace InternshipMpbile.Pages
 {
     public partial class BasvuruFormuPage : ContentPage
     {
-        private const string EkranAdi = "Başvuru Formu";
-        private const string ParolaEkraniAdi = "Parolayı Değiştir";
         private const int EnAzParolaUzunlugu = 6;
+
+        // Sabit değil özellik: dil değiştirilebildiği için metin her kullanımda çevrilir.
+        private static string EkranAdi => Ceviri.Al("Başvuru Formu");
+        private static string ParolaEkraniAdi => Ceviri.Al("Parolayı Değiştir");
+        private static string Tamam => Ceviri.Al("Tamam");
 
         public BasvuruFormuPage()
         {
             InitializeComponent();
-            SecenekleriYukle();
         }
 
-        // Geçici parolayla giriş yapan kullanıcıyı, formu kullanmadan önce
-        // parola değiştirme pop-up'ı karşılar.
-        protected override void OnAppearing()
+        // Geçici parolayla giriş yapan kullanıcıyı, formu kullanmadan önce parola
+        // değiştirme pop-up'ı karşılar. Seçenekler de her girişte tazelenir; böylece
+        // Referans Ekleme ekranında yazılan bir alt tip, buraya dönüldüğünde ilgili
+        // açılır listede hazır olur.
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
+
             ParolaDegistirOverlay.IsVisible = Oturum.AktifKullanici?.GeciciSifre == true;
+
+            await SecenekleriYukleAsync();
         }
 
-        private void SecenekleriYukle()
+        private async Task SecenekleriYukleAsync()
         {
-            BasvuranBirimAlani.Secenekler = FormSecenekleri.BasvuranBirimler;
-            BasvuruYapilanProjeAlani.Secenekler = FormSecenekleri.BasvuruYapilanProjeler;
-            BasvuruYapilanTurAlani.Secenekler = FormSecenekleri.BasvuruYapilanTurler;
-            KatilimciTuruAlani.Secenekler = FormSecenekleri.KatilimciTurleri;
-            BasvuruDonemiAlani.Secenekler = FormSecenekleri.BasvuruDonemleri;
-            BasvuruDurumuAlani.Secenekler = FormSecenekleri.BasvuruDurumlari;
+            // Başvuru durumu bir referans değil, sabit iş kuralıdır; tablodan beslenmez.
+            BasvuruDurumuAlani.SecenekleriTazele(FormSecenekleri.BasvuruDurumlari);
+
+            ILookup<string, string>? referanslar = null;
+
+            try
+            {
+                referanslar = await ReferansService.AltTipleriTipeGoreGetirAsync();
+            }
+            catch (Exception ex)
+            {
+                // Referanslara ulaşılamazsa form varsayılan seçeneklerle çalışmayı sürdürür.
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Referanslar yüklenirken bir hata oluştu:")} {ex.Message}", Tamam);
+            }
+
+            Doldur(BasvuranBirimAlani, FormSecenekleri.BasvuranBirimler, ReferansTipleri.BasvuranBirim);
+            Doldur(BasvuruYapilanProjeAlani, FormSecenekleri.BasvuruYapilanProjeler, ReferansTipleri.BasvuruYapilanProje);
+            Doldur(BasvuruYapilanTurAlani, FormSecenekleri.BasvuruYapilanTurler, ReferansTipleri.BasvuruYapilanTur);
+            Doldur(KatilimciTuruAlani, FormSecenekleri.KatilimciTurleri, ReferansTipleri.KatilimciTuru);
+            Doldur(BasvuruDonemiAlani, FormSecenekleri.BasvuruDonemleri, ReferansTipleri.BasvuruDonemi);
+
+            // Varsayılan seçeneklerin üstüne Referans tablosundakiler eklenir; Distinct
+            // aynı değerin listede iki kez görünmesini önler.
+            void Doldur(SeciciAlan alan, string[] varsayilanlar, string tip)
+            {
+                var eklenenler = referanslar?[tip] ?? Enumerable.Empty<string>();
+                alan.SecenekleriTazele(varsayilanlar.Concat(eklenenler).Distinct().ToList());
+            }
         }
 
         private async void OnKaydetClicked(object? sender, EventArgs e)
         {
             if (!ZorunluAlanlarDolu())
             {
-                await DisplayAlert(EkranAdi, "Lütfen tüm zorunlu alanları doldurun.", "Tamam");
+                await DisplayAlert(EkranAdi, Ceviri.Al("Lütfen tüm zorunlu alanları doldurun."), Tamam);
                 return;
             }
 
+            if (!HibeTutariniCoz(out var hibeTutari))
+            {
+                await DisplayAlert(EkranAdi, Ceviri.Al("Hibe tutarı 0'dan büyük bir sayı olmalıdır."), Tamam);
+                return;
+            }
+
+            if (DurumTarihiAlani.Tarih > BasvuruTarihiAlani.Tarih)
+            {
+                await DisplayAlert(EkranAdi,
+                    Ceviri.Al("Durum tarihi, başvuru tarihinden ileri bir tarih olamaz."), Tamam);
+                return;
+            }
+
+            var projeAdi = ProjeAdiAlani.Deger!.Trim();
+
+            KaydetButonu.IsEnabled = false;
+
             try
             {
-                await BasvuruService.KaydetAsync(FormdanBasvuruOlustur());
-                await DisplayAlert(EkranAdi, "Başvuru başarıyla kaydedildi.", "Tamam");
+                if (await BasvuruService.ProjeAdiVarMiAsync(projeAdi))
+                {
+                    await DisplayAlert(EkranAdi,
+                        Ceviri.Al("Bu proje adı daha önce kullanılmış. Lütfen farklı bir proje adı giriniz."), Tamam);
+                    return;
+                }
+
+                await BasvuruService.KaydetAsync(FormdanBasvuruOlustur(projeAdi, hibeTutari));
+                await DisplayAlert(EkranAdi, Ceviri.Al("Başvuru başarıyla kaydedildi."), Tamam);
                 FormuTemizle();
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Kayıt sırasında bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Kayıt sırasında bir hata oluştu:")} {ex.Message}", Tamam);
+            }
+            finally
+            {
+                KaydetButonu.IsEnabled = true;
             }
         }
 
@@ -63,9 +124,29 @@ namespace InternshipMpbile.Pages
             !BasvuruDonemiAlani.Bos &&
             !BasvuruDurumuAlani.Bos;
 
-        private Basvuru FormdanBasvuruOlustur() => new()
+        /// <summary>
+        /// Hibe tutarı zorunlu değildir: alan boşsa tutar null kalır ve geçerli sayılır.
+        /// Doluysa sayıya çevrilebilmeli ve 0'dan büyük olmalıdır.
+        /// </summary>
+        private bool HibeTutariniCoz(out decimal? tutar)
         {
-            ProjeAdi = ProjeAdiAlani.Deger!,
+            tutar = null;
+
+            var metin = HibeTutariAlani.Deger?.Trim();
+
+            if (string.IsNullOrEmpty(metin))
+                return true;
+
+            if (!decimal.TryParse(metin, out var deger) || deger <= 0)
+                return false;
+
+            tutar = deger;
+            return true;
+        }
+
+        private Basvuru FormdanBasvuruOlustur(string projeAdi, decimal? hibeTutari) => new()
+        {
+            ProjeAdi = projeAdi,
             BasvuranBirim = BasvuranBirimAlani.SecilenDeger!,
             BasvuruYapilanProje = BasvuruYapilanProjeAlani.SecilenDeger!,
             BasvuruYapilanTur = BasvuruYapilanTurAlani.SecilenDeger!,
@@ -74,7 +155,7 @@ namespace InternshipMpbile.Pages
             BasvuruTarihi = BasvuruTarihiAlani.Tarih,
             BasvuruDurumu = BasvuruDurumuAlani.SecilenDeger!,
             DurumTarihi = DurumTarihiAlani.Tarih,
-            HibeTutari = decimal.TryParse(HibeTutariAlani.Deger, out var hibeTutari) ? hibeTutari : null
+            HibeTutari = hibeTutari
         };
 
         // Kayıt sonrası alanları boşaltarak formu yeni başvuruya hazırlar.
@@ -107,26 +188,27 @@ namespace InternshipMpbile.Pages
 
             if (eskiParola.Length == 0 || yeniParola.Length == 0 || yeniParolaTekrar.Length == 0)
             {
-                await DisplayAlert(ParolaEkraniAdi, "Lütfen tüm alanları doldurun.", "Tamam");
+                await DisplayAlert(ParolaEkraniAdi, Ceviri.Al("Lütfen tüm alanları doldurun."), Tamam);
                 return;
             }
 
             if (yeniParola != yeniParolaTekrar)
             {
-                await DisplayAlert(ParolaEkraniAdi, "Yeni parolalar birbiriyle aynı değil.", "Tamam");
+                await DisplayAlert(ParolaEkraniAdi, Ceviri.Al("Yeni parolalar birbiriyle aynı değil."), Tamam);
                 return;
             }
 
             if (yeniParola.Length < EnAzParolaUzunlugu)
             {
                 await DisplayAlert(ParolaEkraniAdi,
-                    $"Yeni parola en az {EnAzParolaUzunlugu} karakter olmalıdır.", "Tamam");
+                    Ceviri.Al("Yeni parola en az {0} karakter olmalıdır.", EnAzParolaUzunlugu), Tamam);
                 return;
             }
 
             if (yeniParola == eskiParola)
             {
-                await DisplayAlert(ParolaEkraniAdi, "Yeni parola geçici parolanızdan farklı olmalıdır.", "Tamam");
+                await DisplayAlert(ParolaEkraniAdi,
+                    Ceviri.Al("Yeni parola geçici parolanızdan farklı olmalıdır."), Tamam);
                 return;
             }
 
@@ -136,7 +218,7 @@ namespace InternshipMpbile.Pages
             {
                 if (!await KullaniciService.SifreDegistirAsync(kullanici.Id, eskiParola, yeniParola))
                 {
-                    await DisplayAlert(ParolaEkraniAdi, "Eski parolanız hatalı.", "Tamam");
+                    await DisplayAlert(ParolaEkraniAdi, Ceviri.Al("Eski parolanız hatalı."), Tamam);
                     return;
                 }
 
@@ -144,11 +226,12 @@ namespace InternshipMpbile.Pages
                 ParolaDegistirOverlay.IsVisible = false;
                 ParolaAlanlariniTemizle();
 
-                await BildirimGosterAsync("Parolanız başarıyla değiştirildi.");
+                await BildirimGosterAsync(Ceviri.Al("Parolanız başarıyla değiştirildi."));
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Parola değiştirilirken bir hata oluştu: {ex.Message}", "Tamam");
+                await DisplayAlert(Ceviri.Al("Hata"),
+                    $"{Ceviri.Al("Parola değiştirilirken bir hata oluştu:")} {ex.Message}", Tamam);
             }
             finally
             {

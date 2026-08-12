@@ -6,21 +6,6 @@ namespace InternshipMpbile.Services
     /// <summary>Referans tablosu üzerindeki işlemler ve alt tip seçeneklerinin kaynağı.</summary>
     public static class ReferansService
     {
-        /// <summary>
-        /// Referans tipi -> BasvuruFormu tablosundaki karşılık gelen sütun adı.
-        /// Sütun adları sorguya parametre olarak gönderilemediği için alt tip
-        /// sorgusuna yalnızca bu sözlükteki sabit değerler yazılır; kullanıcıdan
-        /// gelen metin hiçbir zaman doğrudan sorguya girmez.
-        /// </summary>
-        private static readonly Dictionary<string, string> TipSutunlari = new()
-        {
-            ["Başvuran Birim"] = "BasvuranBirim",
-            ["Başvuru Yapılan Proje"] = "BasvuruYapilanProje",
-            ["Başvuru Yapılan Tür"] = "BasvuruYapilanTur",
-            ["Katılımcı Türü"] = "KatilimciTuru",
-            ["Başvuru Dönemi"] = "BasvuruDonemi"
-        };
-
         private const string VarMiQuery = @"
             SELECT COUNT(*) FROM Referans
             WHERE Type = @Type AND Subtype = @Subtype AND [Delete] = 0";
@@ -38,34 +23,29 @@ namespace InternshipMpbile.Services
         private const string SoftDeleteQuery = @"
             UPDATE Referans SET [Delete] = 1 WHERE Id = @Id";
 
-        /// <summary>Referans Ekleme ekranındaki tip listesi.</summary>
-        public static List<string> Tipler => TipSutunlari.Keys.ToList();
+        private const string AltTiplerQuery = @"
+            SELECT Type, Subtype
+            FROM Referans
+            WHERE [Delete] = 0
+            ORDER BY Subtype";
 
         /// <summary>
-        /// Seçilen referans tipine karşılık gelen sütunda, başvuru formu üzerinden
-        /// girilmiş olan farklı değerleri getirir.
+        /// Kayıtlı bütün referansları alt tip adlarına indirgeyip tipe göre gruplar.
+        /// Başvuru Formu'ndaki beş açılır liste için tip başına ayrı sorgu açmak
+        /// yerine tablo bir kez okunur; arama da sözlük üzerinden yapılır.
         /// </summary>
-        public static async Task<List<string>> AltTipleriGetirAsync(string tip)
+        public static async Task<ILookup<string, string>> AltTipleriTipeGoreGetirAsync()
         {
-            if (!TipSutunlari.TryGetValue(tip, out var sutun))
-                return new List<string>();
-
-            var altTipler = new List<string>();
-
-            var query = $@"
-                SELECT DISTINCT {sutun}
-                FROM BasvuruFormu
-                WHERE {sutun} IS NOT NULL AND LTRIM(RTRIM({sutun})) <> ''
-                ORDER BY {sutun}";
+            var kayitlar = new List<(string Tip, string AltTip)>();
 
             using var connection = await Database.AcikBaglantiAsync();
-            using var command = new SqlCommand(query, connection);
+            using var command = new SqlCommand(AltTiplerQuery, connection);
             using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-                altTipler.Add(reader.GetString(0));
+                kayitlar.Add((reader.GetString(0), reader.GetString(1)));
 
-            return altTipler;
+            return kayitlar.ToLookup(kayit => kayit.Tip, kayit => kayit.AltTip);
         }
 
         /// <summary>Aynı tip/alt tip ikilisi silinmemiş bir kayıt olarak duruyor mu?</summary>
