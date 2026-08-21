@@ -1,4 +1,4 @@
-using InternshipMpbile.Localization;
+﻿using InternshipMpbile.Localization;
 using InternshipMpbile.Services;
 
 namespace InternshipMpbile.Pages
@@ -40,6 +40,16 @@ namespace InternshipMpbile.Pages
 
                 Oturum.Baslat(kullanici);
                 ParolaAlani.Temizle();
+
+                // Karşı uygulamanın seni mesajlaşma dizininde bulabilmesi için;
+                // burada bir aksilik olursa giriş engellenmez.
+                try
+                {
+                    await MesajService.DizineYazAsync(kullanici);
+                }
+                catch (Exception)
+                {
+                }
 
                 // Giriş başarılı: pencerenin kök sayfası menülü ana ekranla değişir.
                 App.AnaEkranaGec();

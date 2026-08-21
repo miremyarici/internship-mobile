@@ -248,4 +248,34 @@
         <Setter Property="HorizontalTextAlignment" Value="Center" />
     </Style>
 
+    <!-- ==================== Mesajlaşma ==================== -->
+
+    <!-- Gönderildi / iletildi / okundu tikleri. Rengi kullanan yer verir:
+         gri = henüz okunmadı, mavi (FormOkundu) = okundu. -->
+    <Style x:Key="TikIkonu" TargetType="Path">
+        <Setter Property="StrokeThickness" Value="1.7" />
+        <Setter Property="StrokeLineCap" Value="Round" />
+        <Setter Property="StrokeLineJoin" Value="Round" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="Aspect" Value="Uniform" />
+        <Setter Property="HeightRequest" Value="13" />
+        <Setter Property="WidthRequest" Value="17" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="InputTransparent" Value="True" />
+    </Style>
+
+    <!-- Sohbet balonunun altındaki saat -->
+    <Style x:Key="BalonSaati" TargetType="Label">
+        <Setter Property="FontFamily" Value="SourceSans3Regular" />
+        <Setter Property="FontSize" Value="10.5" />
+        <Setter Property="VerticalOptions" Value="Center" />
+    </Style>
+
+    <!-- Balon içindeki mesaj metni -->
+    <Style x:Key="BalonMetni" TargetType="Label">
+        <Setter Property="FontFamily" Value="SourceSans3Regular" />
+        <Setter Property="FontSize" Value="14.5" />
+        <Setter Property="LineBreakMode" Value="WordWrap" />
+    </Style>
+
 </ResourceDictionary>

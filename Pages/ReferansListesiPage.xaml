@@ -176,6 +176,10 @@
             </Border>
         </Grid>
 
+
+        <!-- Sağ altta sabit duran mesajlaşma butonu -->
+        <controls:MesajButonu Grid.RowSpan="3" />
+
     </Grid>
 
 </ContentPage>

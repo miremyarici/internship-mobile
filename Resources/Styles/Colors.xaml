@@ -70,4 +70,7 @@
     <Color x:Key="FormConfirmNoDark">#6B3C37</Color>
     <Color x:Key="FormToastDark">#2E9E5B</Color>
     <Color x:Key="FormLogoutDark">#FFB4AB</Color>
+    <!-- Okundu tiki: iki temada da aynı mavi -->
+    <Color x:Key="FormOkundu">#3B82F6</Color>
+
 </ResourceDictionary>

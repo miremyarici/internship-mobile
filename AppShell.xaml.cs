@@ -1,4 +1,4 @@
-using InternshipMpbile.Localization;
+﻿using InternshipMpbile.Localization;
 using InternshipMpbile.Services;
 
 namespace InternshipMpbile
@@ -8,6 +8,10 @@ namespace InternshipMpbile
         public AppShell()
         {
             InitializeComponent();
+
+            // Menüde yer almayan, koddan açılan ekranlar.
+            Routing.RegisterRoute("mesajlar", typeof(Pages.MesajlarPage));
+            Routing.RegisterRoute("sohbet", typeof(Pages.SohbetPage));
 
             // Shell yalnızca giriş yapıldıktan sonra oluşturulduğu için aktif
             // kullanıcı bu noktada bellidir.

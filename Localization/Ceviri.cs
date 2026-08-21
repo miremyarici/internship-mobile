@@ -1,4 +1,4 @@
-namespace InternshipMpbile.Localization
+﻿namespace InternshipMpbile.Localization
 {
     public enum Dil
     {
@@ -189,7 +189,22 @@ namespace InternshipMpbile.Localization
             ["Kullanıcıyı Silmek İstediğinizden Emin Misiniz?"] = "Are You Sure You Want To Delete This User?",
             ["Bu e-posta ile kayıtlı bir kullanıcı zaten var."] = "A user with this e-mail already exists.",
             ["Kullanıcı başarıyla eklendi."] = "The user was added successfully.",
-            ["Kullanıcılar yüklenirken bir hata oluştu:"] = "An error occurred while loading users:"
+            ["Kullanıcılar yüklenirken bir hata oluştu:"] = "An error occurred while loading users:",
+
+            // ---------- Mesajlaşma ----------
+            ["Mesajlar"] = "Messages",
+            ["Ara..."] = "Search...",
+            ["Kişiler"] = "Contacts",
+            ["Dün"] = "Yesterday",
+            ["Henüz mesaj yok"] = "No messages yet",
+            ["Sonuç bulunamadı"] = "No results found",
+            ["Yukarıdaki arama kutusundan bir kişi bulup sohbet başlatabilirsiniz."] =
+                "Use the search box above to find someone and start a conversation.",
+            ["Mesajlar yüklenirken bir hata oluştu:"] = "An error occurred while loading messages:",
+            ["Sohbeti siz başlatın"] = "Start the conversation",
+            ["Aşağıdan ilk mesajınızı yazabilirsiniz."] = "You can type your first message below.",
+            ["Mesaj yazın..."] = "Type a message...",
+            ["Mesaj gönderilemedi:"] = "The message could not be sent:"
         };
 
         /// <summary>

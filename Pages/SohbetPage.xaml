@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:InternshipMpbile.Models"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
+             x:Class="InternshipMpbile.Pages.SohbetPage"
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ==================== Mesaj balonları ==================== -->
+        <ScrollView x:Name="MesajScroll" Grid.Row="0">
+            <VerticalStackLayout x:Name="MesajYigini" Padding="14,16,14,10" Spacing="10">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:Mesaj">
+
+                        <!-- Balon; kendi mesajım sağda ve koyu, gelen mesaj solda ve
+                             kart renginde durur. Yön ve renk DataTrigger ile seçilir. -->
+                        <Border Padding="13,9"
+                                MaximumWidthRequest="290"
+                                StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14" />
+                            </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="#22000000" Offset="0,1" Radius="6" Opacity="0.35" />
+                            </Border.Shadow>
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="HorizontalOptions" Value="Start" />
+                                    <Setter Property="BackgroundColor"
+                                            Value="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}" />
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Benden}" Value="True">
+                                            <Setter Property="HorizontalOptions" Value="End" />
+                                            <Setter Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormButtonBackgroundDark}}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <VerticalStackLayout Spacing="3">
+
+                                <Label Text="{Binding Metin}" Style="{StaticResource BalonMetni}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Benden}" Value="False">
+                                            <Setter Property="TextColor"
+                                                    Value="{AppThemeBinding Light={StaticResource FormFieldText}, Dark={StaticResource FormFieldTextDark}}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Benden}" Value="True">
+                                            <Setter Property="TextColor"
+                                                    Value="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormButtonTextDark}}" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+
+                                <HorizontalStackLayout Spacing="5" HorizontalOptions="End">
+
+                                    <Label Text="{Binding SaatMetni}" Style="{StaticResource BalonSaati}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Benden}" Value="False">
+                                                <Setter Property="TextColor"
+                                                        Value="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Benden}" Value="True">
+                                                <Setter Property="TextColor"
+                                                        Value="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormPlaceholderDark}}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Path Data="M2,8 L6,12 L14,3"
+                                          IsVisible="{Binding TekTik}"
+                                          Style="{StaticResource TikIkonu}"
+                                          Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormPlaceholderDark}}" />
+
+                                    <Path Data="M1,8.5 L4.5,12 L11.5,3.5 M7,10.5 L8.5,12 L16,3.5"
+                                          IsVisible="{Binding CiftTikGri}"
+                                          Style="{StaticResource TikIkonu}"
+                                          Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormPlaceholderDark}}" />
+
+                                    <Path Data="M1,8.5 L4.5,12 L11.5,3.5 M7,10.5 L8.5,12 L16,3.5"
+                                          IsVisible="{Binding CiftTikMavi}"
+                                          Style="{StaticResource TikIkonu}"
+                                          Stroke="{StaticResource FormOkundu}" />
+
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Sohbet hiç başlamadıysa -->
+        <VerticalStackLayout x:Name="BosGorunum"
+                             Padding="30"
+                             Spacing="8"
+                             IsVisible="False"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+            <Label Text="{yerel:Ceviri Sohbeti siz başlatın}"
+                   Style="{StaticResource EmptyStateTitle}" />
+            <Label Text="{yerel:Ceviri Aşağıdan ilk mesajınızı yazabilirsiniz.}"
+                   Style="{StaticResource EmptyStateText}" />
+        </VerticalStackLayout>
+
+        <!-- ==================== Yazma çubuğu ==================== -->
+        <Grid Grid.Row="1"
+              Padding="12,10,12,12"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="10"
+              BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}">
+
+            <Border Padding="16,0"
+                    MinimumHeightRequest="46"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                    StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="23" />
+                </Border.StrokeShape>
+
+                <Entry x:Name="MesajAlani"
+                       Placeholder="{yerel:Ceviri Mesaj yazın...}"
+                       ReturnType="Send"
+                       Completed="OnGonderClicked"
+                       Style="{StaticResource FieldEntry}"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- Gönder: içi dolu daire, kâğıt uçak -->
+            <Border Grid.Column="1"
+                    WidthRequest="46"
+                    HeightRequest="46"
+                    Padding="0"
+                    StrokeThickness="0"
+                    VerticalOptions="End"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormAccentDark}}">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="23" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnGonderTapped" />
+                </Border.GestureRecognizers>
+
+                <Path Data="M3,11.5 L21,3 L13.5,21 L11,13.5 Z M11,13.5 L21,3"
+                      Stroke="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormTitle}}"
+                      StrokeThickness="1.6"
+                      StrokeLineJoin="Round"
+                      Fill="Transparent"
+                      Aspect="Uniform"
+                      HeightRequest="22"
+                      WidthRequest="22"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center"
+                      InputTransparent="True" />
+            </Border>
+        </Grid>
+
+        <ActivityIndicator x:Name="YukleniyorIndicator"
+                           Grid.RowSpan="2"
+                           Style="{StaticResource PageBusyIndicator}" />
+
+    </Grid>
+
+</ContentPage>

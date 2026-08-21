@@ -7,42 +7,48 @@
              Title=""
              BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
 
-    <ScrollView>
-        <!-- Beyaz form kartı -->
-        <Border Margin="14,16,14,28"
-                Padding="20,22,20,24"
-                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
-                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
-                StrokeThickness="1">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="10" />
-            </Border.StrokeShape>
-            <Border.Shadow>
-                <Shadow Brush="#25000000" Offset="0,3" Radius="12" Opacity="0.5" />
-            </Border.Shadow>
+    <Grid>
 
-            <VerticalStackLayout Spacing="18">
+        <ScrollView>
+            <!-- Beyaz form kartı -->
+            <Border Margin="14,16,14,28"
+                    Padding="20,22,20,24"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                    Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                    StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="#25000000" Offset="0,3" Radius="12" Opacity="0.5" />
+                </Border.Shadow>
 
-                <Label Text="{yerel:Ceviri Referans Ekleme}"
-                       Style="{StaticResource PageTitle}"
-                       Margin="0,0,0,4" />
+                <VerticalStackLayout Spacing="18">
 
-                <controls:SeciciAlan x:Name="ReferansTipiAlani"
-                                     Baslik="{yerel:Ceviri REFERANS TİPİ}" />
+                    <Label Text="{yerel:Ceviri Referans Ekleme}"
+                           Style="{StaticResource PageTitle}"
+                           Margin="0,0,0,4" />
 
-                <!-- Serbest metin: buraya yazılan değer kaydedildikten sonra
-                     Başvuru Formu'nda ilgili tipin açılır listesinde görünür. -->
-                <controls:MetinAlani x:Name="ReferansAltTipiAlani"
-                                     Baslik="{yerel:Ceviri REFERANS ALT TİPİ}" />
+                    <controls:SeciciAlan x:Name="ReferansTipiAlani"
+                                         Baslik="{yerel:Ceviri REFERANS TİPİ}" />
 
-                <Button x:Name="KaydetButonu"
-                        Text="{yerel:Ceviri Kaydet}"
-                        Clicked="OnKaydetClicked"
-                        Style="{StaticResource PrimaryButton}"
-                        Margin="0,10,0,0" />
+                    <!-- Serbest metin: buraya yazılan değer kaydedildikten sonra
+                         Başvuru Formu'nda ilgili tipin açılır listesinde görünür. -->
+                    <controls:MetinAlani x:Name="ReferansAltTipiAlani"
+                                         Baslik="{yerel:Ceviri REFERANS ALT TİPİ}" />
 
-            </VerticalStackLayout>
-        </Border>
-    </ScrollView>
+                    <Button x:Name="KaydetButonu"
+                            Text="{yerel:Ceviri Kaydet}"
+                            Clicked="OnKaydetClicked"
+                            Style="{StaticResource PrimaryButton}"
+                            Margin="0,10,0,0" />
+
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
+        <!-- Sağ altta sabit duran mesajlaşma butonu -->
+        <controls:MesajButonu />
+
+    </Grid>
 
 </ContentPage>

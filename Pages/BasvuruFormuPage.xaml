@@ -125,6 +125,10 @@
             <Label x:Name="BildirimLabel" Style="{StaticResource ToastText}" />
         </Border>
 
+
+        <!-- Sağ altta sabit duran mesajlaşma butonu -->
+        <controls:MesajButonu />
+
     </Grid>
 
 </ContentPage>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:InternshipMpbile.Models"
+             xmlns:yerel="clr-namespace:InternshipMpbile.Localization"
+             x:Class="InternshipMpbile.Pages.MesajlarPage"
+             Title="{yerel:Ceviri Mesajlar}"
+             BackgroundColor="{AppThemeBinding Light={StaticResource FormBackground}, Dark={StaticResource FormBackgroundDark}}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ==================== Arama ==================== -->
+        <Border Grid.Row="0"
+                Margin="14,16,14,10"
+                Padding="16,0"
+                HeightRequest="46"
+                BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                StrokeThickness="1">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="23" />
+            </Border.StrokeShape>
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                <Path Data="M14.5,9 A5.5,5.5 0 1 1 3.5,9 A5.5,5.5 0 1 1 14.5,9 M13,13 L18,18"
+                      Stroke="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}"
+                      StrokeThickness="1.7"
+                      StrokeLineCap="Round"
+                      Fill="Transparent"
+                      Aspect="Uniform"
+                      HeightRequest="19"
+                      WidthRequest="19"
+                      VerticalOptions="Center"
+                      InputTransparent="True" />
+
+                <Entry x:Name="AramaAlani"
+                       Grid.Column="1"
+                       Placeholder="{yerel:Ceviri Ara...}"
+                       TextChanged="OnAramaDegisti"
+                       Style="{StaticResource FieldEntry}"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- ==================== Sohbetler ve kişiler ==================== -->
+        <RefreshView x:Name="MesajRefreshView" Grid.Row="1" Refreshing="OnRefreshing">
+            <ScrollView>
+                <VerticalStackLayout Padding="14,4,14,28" Spacing="12">
+
+                    <!-- Var olan sohbetler -->
+                    <VerticalStackLayout x:Name="SohbetListesi" Spacing="12">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:SohbetOzeti">
+                                <Border Padding="0"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                                        StrokeThickness="1">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10" />
+                                    </Border.StrokeShape>
+                                    <Border.Shadow>
+                                        <Shadow Brush="#25000000" Offset="0,2" Radius="8" Opacity="0.4" />
+                                    </Border.Shadow>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnSohbetTapped" />
+                                    </Border.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="4,*">
+
+                                        <!-- Okunmamış sohbetin solundaki renkli şerit -->
+                                        <BoxView Color="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormAccentDark}}"
+                                                 IsVisible="{Binding OkunmamisVar}" />
+
+                                        <Grid Grid.Column="1"
+                                              Padding="16,14"
+                                              ColumnDefinitions="Auto,*,Auto"
+                                              ColumnSpacing="14">
+
+                                            <!-- Fotoğraf yerine baş harfler -->
+                                            <Border WidthRequest="48"
+                                                    HeightRequest="48"
+                                                    Padding="0"
+                                                    StrokeThickness="0"
+                                                    VerticalOptions="Center"
+                                                    BackgroundColor="{AppThemeBinding Light={StaticResource FormButtonBackground}, Dark={StaticResource FormButtonBackgroundDark}}">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="24" />
+                                                </Border.StrokeShape>
+                                                <Label Text="{Binding BasHarfler}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormButtonTextDark}}"
+                                                       FontFamily="MerriweatherBold"
+                                                       FontSize="16"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Border>
+
+                                            <VerticalStackLayout Grid.Column="1" Spacing="3" VerticalOptions="Center">
+                                                <Label Text="{Binding AdSoyad}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource FormTitle}, Dark={StaticResource FormTitleDark}}"
+                                                       FontFamily="MerriweatherBold"
+                                                       FontSize="15"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1" />
+                                                <Label Text="{Binding SonMesaj}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}"
+                                                       FontFamily="SourceSans3Regular"
+                                                       FontSize="13.5"
+                                                       LineBreakMode="TailTruncation"
+                                                       MaxLines="1" />
+                                            </VerticalStackLayout>
+
+                                            <VerticalStackLayout Grid.Column="2"
+                                                                 Spacing="6"
+                                                                 HorizontalOptions="End"
+                                                                 VerticalOptions="Center">
+
+                                                <Label Text="{Binding ZamanMetni}"
+                                                       TextColor="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}"
+                                                       FontFamily="SourceSans3Bold"
+                                                       FontSize="11"
+                                                       HorizontalTextAlignment="End" />
+
+                                                <!-- Tek tik: gönderildi -->
+                                                <Path Data="M2,8 L6,12 L14,3"
+                                                      IsVisible="{Binding TekTik}"
+                                                      Style="{StaticResource TikIkonu}"
+                                                      Stroke="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}" />
+
+                                                <!-- Çift tik gri: karşı uygulamaya iletildi -->
+                                                <Path Data="M1,8.5 L4.5,12 L11.5,3.5 M7,10.5 L8.5,12 L16,3.5"
+                                                      IsVisible="{Binding CiftTikGri}"
+                                                      Style="{StaticResource TikIkonu}"
+                                                      Stroke="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}" />
+
+                                                <!-- Çift tik mavi: okundu -->
+                                                <Path Data="M1,8.5 L4.5,12 L11.5,3.5 M7,10.5 L8.5,12 L16,3.5"
+                                                      IsVisible="{Binding CiftTikMavi}"
+                                                      Style="{StaticResource TikIkonu}"
+                                                      Stroke="{StaticResource FormOkundu}" />
+
+                                                <!-- Okunmamış sayısı -->
+                                                <Border WidthRequest="21"
+                                                        HeightRequest="21"
+                                                        Padding="0"
+                                                        StrokeThickness="0"
+                                                        IsVisible="{Binding OkunmamisVar}"
+                                                        HorizontalOptions="End"
+                                                        BackgroundColor="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormAccentDark}}">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="11" />
+                                                    </Border.StrokeShape>
+                                                    <Label Text="{Binding OkunmamisMetni}"
+                                                           TextColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormTitle}}"
+                                                           FontFamily="SourceSans3Bold"
+                                                           FontSize="10"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center" />
+                                                </Border>
+
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <!-- Aramada çıkan, henüz sohbet edilmemiş kişiler -->
+                    <Label x:Name="KisilerBasligi"
+                           Text="{yerel:Ceviri Kişiler}"
+                           Style="{StaticResource PageTitle}"
+                           FontSize="15"
+                           IsVisible="False"
+                           Margin="2,10,0,0" />
+
+                    <VerticalStackLayout x:Name="KisiListesi" Spacing="12">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:Kisi">
+                                <Border Padding="16,12"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource FormCard}, Dark={StaticResource FormCardDark}}"
+                                        Stroke="{AppThemeBinding Light={StaticResource FormCardBorder}, Dark={StaticResource FormCardBorderDark}}"
+                                        StrokeThickness="1">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="10" />
+                                    </Border.StrokeShape>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnKisiTapped" />
+                                    </Border.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                                        <Border WidthRequest="42"
+                                                HeightRequest="42"
+                                                Padding="0"
+                                                StrokeThickness="0"
+                                                VerticalOptions="Center"
+                                                BackgroundColor="{AppThemeBinding Light={StaticResource FormButtonBackground}, Dark={StaticResource FormButtonBackgroundDark}}">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="21" />
+                                            </Border.StrokeShape>
+                                            <Label Text="{Binding BasHarfler}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource FormFieldLabel}, Dark={StaticResource FormButtonTextDark}}"
+                                                   FontFamily="MerriweatherBold"
+                                                   FontSize="14"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                            <Label Text="{Binding AdSoyad}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource FormTitle}, Dark={StaticResource FormTitleDark}}"
+                                                   FontFamily="MerriweatherBold"
+                                                   FontSize="14" />
+                                            <Label Text="{Binding Eposta}"
+                                                   TextColor="{AppThemeBinding Light={StaticResource FormPlaceholder}, Dark={StaticResource FormPlaceholderDark}}"
+                                                   FontFamily="SourceSans3Regular"
+                                                   FontSize="12.5" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <!-- Boş durum -->
+                    <VerticalStackLayout x:Name="BosGorunum"
+                                         Padding="30,40"
+                                         Spacing="8"
+                                         IsVisible="False"
+                                         HorizontalOptions="Center">
+                        <Label x:Name="BosBaslikLabel"
+                               Text="{yerel:Ceviri Henüz mesaj yok}"
+                               Style="{StaticResource EmptyStateTitle}" />
+                        <Label x:Name="BosAciklamaLabel"
+                               Text="{yerel:Ceviri Yukarıdaki arama kutusundan bir kişi bulup sohbet başlatabilirsiniz.}"
+                               Style="{StaticResource EmptyStateText}" />
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <ActivityIndicator x:Name="YukleniyorIndicator"
+                           Grid.RowSpan="2"
+                           Style="{StaticResource PageBusyIndicator}" />
+
+        <Border x:Name="BildirimToast" Grid.RowSpan="2" Style="{StaticResource ToastCard}">
+            <Label x:Name="BildirimLabel" Style="{StaticResource ToastText}" />
+        </Border>
+
+    </Grid>
+
+</ContentPage>

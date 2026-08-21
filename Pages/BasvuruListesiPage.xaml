@@ -232,6 +232,10 @@
                            x:Name="YukleniyorIndicator"
                            Style="{StaticResource PageBusyIndicator}" />
 
+
+        <!-- Sağ altta sabit duran mesajlaşma butonu -->
+        <controls:MesajButonu Grid.RowSpan="3" />
+
     </Grid>
 
 </ContentPage>
